@@ -1,0 +1,38 @@
+{
+	"id": 898,
+	"name": "Unilag Post UME",
+	"config": {
+		"randomizeAll": false,
+		"requiredRandomQuestions": 40,
+		"questionsCount": 300,
+		"subGroupProperties": {
+			"userSelectable": true,
+			"preserveGroupHierarchyInPackage": true,
+			"minSelectable": 4,
+			"maxSelectable": 8,
+			"groups": [
+				{
+					"id": 33,
+					"name": "2017 Post UTME",
+					"compulsory": false,
+					"numberOfRequiredQuestions": 50,
+					"questionCount": 150,
+					"order": "FIRST"
+				},
+				{
+					"id": 43,
+					"name": "2019 Post UTME",
+					"compulsory": false,
+					"numberOfRequiredQuestions": 50,
+					"questionCount": 150,
+					"order": "FIRST"
+				}
+			]
+		},
+		"resultSettings": {
+			"autoQuestionMarking": true,
+			"showResultOnSubmission": true
+		},
+		"endpointUrl": "/transcendence"
+	}
+}

@@ -1,0 +1,27 @@
+.activeTab {
+    background: url('../../images/activeTab.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    font-size: 1.2rem;
+    color: white;
+}
+
+@keyframes enlarge-text{
+    to{
+        font-size: 1.1rem;
+    }
+}
+
+.border-color__techno-tab-green {
+    border-bottom: solid 2px #04d731;
+}
+
+.swell:hover{
+    animation-name: enlarge-text;
+    animation-fill-mode: forwards;
+    animation-duration: 400ms;
+}
+
+.click-pointer {
+    cursor: pointer;
+}

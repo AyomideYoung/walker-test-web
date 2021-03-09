@@ -1,0 +1,7 @@
+body{
+    background: white;
+}
+
+.danger-text{
+    color: red !important; 
+}
