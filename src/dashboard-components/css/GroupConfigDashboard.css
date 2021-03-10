@@ -18,7 +18,7 @@
     border: none;
     background: none;
     border-radius: 0;
-    border-bottom: 1px solid green;
+    border-bottom: 1px solid #0bb730;
 }
 
 .horizontal-rule {
@@ -34,7 +34,7 @@
 .lined-input:focus {
     outline: none;
     background: none;
-    border-bottom: 2px solid lightgreen;
+    border-bottom: 2px solid #04d731;
 }
 
 .lined-input:invalid {
