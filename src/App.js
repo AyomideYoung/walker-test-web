@@ -12,6 +12,7 @@ const App = class App extends React.Component {
 		this.loadDataIntoState = this.loadDataIntoState.bind(this);
 		this.updateScreen = this.updateScreen.bind(this);
 		this.stateModifier = new ObjectModifier(this.state);
+		this.currentRequestId = 0;
 		this.state = {
 			errorMessageAvailable: false,
 			ChildSkeleton: DashboardHomeSkeleton,
@@ -27,7 +28,13 @@ const App = class App extends React.Component {
 	}
 
 	showErrorMessage() {
-		return <ErrorModal show={true} errorMsg={this.state.errorMsg} onHide={this.clearErrorMsg}/>;
+		return (
+			<ErrorModal
+				show={true}
+				errorMsg={this.state.errorMsg}
+				onHide={this.clearErrorMsg}
+			/>
+		);
 	}
 
 	updateState(modifiedProperties, shouldCreateMissingKeys) {
@@ -108,7 +115,7 @@ const App = class App extends React.Component {
 		);
 	}
 
-	clearErrorMsg(){
+	clearErrorMsg() {
 		this.updateState(
 			{
 				command: this.stateModifier.getRetainUnchangedValuesCommand(),
@@ -120,6 +127,19 @@ const App = class App extends React.Component {
 		);
 	}
 
+	handleResponse(response, requestId) {
+		if (this.currentRequestId !== requestId) return null;
+
+		if (response.ok) {
+			return response.json();
+		} else {
+			this.setErrorMsg("Sorry, an error occured");
+			return null;
+		}
+	}
+
+	//response handle confirm request id
+
 	genericFetchResponseHandler(response) {
 		if (response.ok) return response.json();
 		else {
@@ -130,14 +150,16 @@ const App = class App extends React.Component {
 	}
 
 	fetchData() {
+		let requestId = Math.random();
+		this.currentRequestId = requestId;
+
 		fetch(this.state.url)
 			.then(
-				this.genericFetchResponseHandler,
+				(response) => this.handleResponse(response, requestId),
 				(reason) => {
 					this.setErrorMsg(
 						`Sorry, we could not connect to the Internet`
 					);
-					return null;
 				}
 			)
 			.then(this.loadDataIntoState);
@@ -147,18 +169,24 @@ const App = class App extends React.Component {
 		if (this.state.invalidated === true) {
 			this.fetchData();
 			return <this.state.ChildSkeleton />;
-		} 
-		else
+		} else
 			return (
 				<>
-				<this.state.ChildComponent
-					{...this.state.childState}
-					genericFetchResponseHandler = {this.genericFetchResponseHandler}
-					modifyState={this.modifyChildState}
-					setErrorMsg={this.setErrorMsg}
-					updateScreen={this.updateScreen}
-				/>
-				{this.state.errorMessageAvailable ? this.showErrorMessage(): <></>}
+					<this.state.ChildComponent
+						{...this.state.childState}
+						genericFetchResponseHandler={
+							this.genericFetchResponseHandler
+						}
+						modifyState={this.modifyChildState}
+						setErrorMsg={this.setErrorMsg}
+						updateScreen={this.updateScreen}
+						glop={this}
+					/>
+					{this.state.errorMessageAvailable ? (
+						this.showErrorMessage()
+					) : (
+						<></>
+					)}
 				</>
 			);
 	}

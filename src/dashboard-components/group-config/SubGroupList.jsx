@@ -125,8 +125,8 @@ const SubGroupList = (props) => {
 	};
 
 	return (
-		<Card className="lato-regular">
-			<Card.Header className="p-1">
+		<Card className="lato-regular mt-2">
+			<Card.Header className="p-0">
 				<div className="d-flex flex-row-reverse">
 					<Button variant="light" onClick={showPseudoElement}>
 						<img src={cross} alt="add-icon" width="18" />
@@ -152,6 +152,7 @@ const SubGroupList = (props) => {
 								genericFetchResponseHandler={
 									props.genericFetchResponseHandler
 								}
+								updateScreen={props.updateScreen}
 								componentState={
 									props.componentState.elementList[i]
 								}

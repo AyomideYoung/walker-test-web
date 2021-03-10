@@ -174,6 +174,7 @@ const GroupConfigDashboard = class GroupConfigDashboard extends Component {
 										...keys
 									)
 								}
+								updateScreen={this.props.updateScreen}
 							/>
 						</Card>
 					) : (

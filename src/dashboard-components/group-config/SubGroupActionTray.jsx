@@ -1,10 +1,17 @@
 import { createRef, useEffect } from "react";
 import { ButtonGroup, Button, Modal } from "react-bootstrap";
 import bin from "../../images/bin2.svg";
+import qEdit from "../../images/q-edit.svg"
 import pencil from "../../images/pencil.svg";
+import DashboardHome from "../DashboardHome";
+import DashboardHomeSkeleton from "../../skeletons/DashboardHomeSkeleton"
 
 const SubGroupActionTray = function (props) {
 	let inputRef = createRef();
+	const composeSubGroupUrl = () =>{
+		//return `http://localhost:8080/groups/rf2938s9/subs/${props.id}`
+		return "http://localhost:8080/db/home";
+	}
 	let hasComponentState = !(props.componentState === undefined);
 	let { isEditing, isShowingModal } = hasComponentState
 		? props.componentState
@@ -12,6 +19,15 @@ const SubGroupActionTray = function (props) {
 
 	let setEditing = () => props.modifyComponentProperty(true, "isEditing");
 	let unsetEditing = () => props.modifyComponentProperty(false, "isEditing");
+
+	let startEditingSubGroupQuestions = () => {
+		let url = composeSubGroupUrl();
+		props.updateScreen({
+			url: url,
+			ChildComponent: DashboardHome,
+			ChildSkeleton: DashboardHomeSkeleton
+		})
+	}
 
 	let showModal = () => props.modifyComponentProperty(true, "isShowingModal");
 	let hideModal = () =>
@@ -93,6 +109,14 @@ const SubGroupActionTray = function (props) {
 						src={pencil}
 						width="18px"
 						height="24px"
+					/>
+				</Button>
+				<Button variant="light" onClick={startEditingSubGroupQuestions}>
+					<img
+						alt="q-edit-icon"
+						src={qEdit}
+						width="26px"
+						height="26px"
 					/>
 				</Button>
 				<Button variant="light" onClick={showModal}>

@@ -52,6 +52,7 @@ const GroupConfig = (props) => {
 				modifyProperty: modifyPropertyForSubGroupList,
 				modifyComponentProperty: modifyComponentPropertyForSubGroupList,
 				componentState: props.componentState.subGroupList,
+				updateScreen: props.updateScreen,
 				setErrorMsg: props.setErrorMsg,
 				genericFetchResponseHandler: props.genericFetchResponseHandler,
 			},
