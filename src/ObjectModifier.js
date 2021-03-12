@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 const ObjectModifier = class {
 	constructor(obj) {
 		this.obj = { ...obj };
@@ -37,115 +38,82 @@ const DeepUpdater = function (input) {
 		return new ResultWrapper(result);
 	}
 
-	function deepUpdateObjectWithModifiedProperties(obj, modifiedProperties) {
+	function deepUpdateObjectWithModifiedProperties(obj, mProps) {
 		let result;
-		let isUnnecessaryUpdate = isDeepUpdateUnnecessary(
-			obj,
-			modifiedProperties
-		);
+		let isUnnecessaryUpdate = isDeepUpdateUnnecessary(obj, mProps);
 
-		if (isUnnecessaryUpdate)
-			result = performNonUpdatingActions(obj, modifiedProperties);
-		else
-			result = updateCurrentPropertiesWithModifiedProperties(
-				obj,
-				modifiedProperties,
-				createMissingKeys,
-				retainmentCommand
-			);
+		if (isUnnecessaryUpdate) result = useMPropsAsResult(obj, mProps);
+		else result = deepUpdateEachChangedProperty(obj, mProps);
 
 		return result;
 	}
 
-	function isDeepUpdateUnnecessary(obj, modifiedProperties) {
+	function isDeepUpdateUnnecessary(obj, mProps) {
 		let currentObjectHasNoProperties = obj === undefined || obj === {};
 		let shouldNotRetainUnchangedValues = !shouldRetainUnchangedValues(
-			modifiedProperties
+			mProps
 		);
 
 		return shouldNotRetainUnchangedValues || currentObjectHasNoProperties;
 	}
 
-	function performNonUpdatingActions(obj, modifiedProperties) {
-		let shouldNotRetainUnchangedValues = !shouldRetainUnchangedValues(
-			modifiedProperties
-		);
+	function useMPropsAsResult(obj, mProps) {
 		let currentObjectHasNoProperties = obj === undefined || obj === {};
 
-		if (shouldNotRetainUnchangedValues) return modifiedProperties;
-		else if (currentObjectHasNoProperties)
-			return deepFilterOutRetainmentCommandFromObject(modifiedProperties);
+		if (!shouldRetainUnchangedValues(mProps)) {
+			return mProps;
+		} else if (currentObjectHasNoProperties)
+			return deepFilterOutRetainmentCommandFromObject(mProps);
 	}
 
 	function shouldRetainUnchangedValues(modifiedProperties) {
-		let firstModifiedProperty = getFirstModifiedProperty(
-			modifiedProperties
-		);
+		let firstModifiedProperty = getFirstProperty(modifiedProperties);
 		return firstModifiedProperty === retainmentCommand;
 	}
 
-	function getModifiedPropertiesKeys(modifiedProperties) {
-		let modifiedPropertiesKeys = Object.keys(modifiedProperties);
+	function getKeys(obj) {
+		let modifiedPropertiesKeys = Object.keys(obj);
 		return modifiedPropertiesKeys;
 	}
 
-	function getFirstModifiedProperty(modifiedProperties) {
-		let modifiedPropertiesKeys = getModifiedPropertiesKeys(
-			modifiedProperties
-		);
-		let firstmodifiedProperty =
-			modifiedProperties[modifiedPropertiesKeys[0]];
+	function getFirstProperty(obj) {
+		let keys = getKeys(obj);
+		let firstProperty = obj[keys[0]];
 
-		return firstmodifiedProperty;
+		return firstProperty;
 	}
 
-	function updateCurrentPropertiesWithModifiedProperties(
-		currentProperties,
-		modifiedProperties,
-		shouldCreateMissingKeys,
-		retainUnchangedValuesCommand
-	) {
-		let modifiedPropertiesKeys = getModifiedPropertiesKeys(
-			modifiedProperties
-		);
+	function deepUpdateEachChangedProperty(obj, modifiedProperties) {
+		let modifiedPropertiesKeys = getKeys(modifiedProperties);
 		let [, ...actualmodifiedKeys] = modifiedPropertiesKeys;
-		let currentPropertiesClone = cloneObject(currentProperties);
+		let objClone = cloneObject(obj);
 
 		for (let key of actualmodifiedKeys) {
-			if (!shouldCreateMissingKeys)
-				throwErrorIfKeyIsMissingInObject(key, currentPropertiesClone);
+			if (!createMissingKeys)
+				throwErrorIfKeyIsMissingInObject(key, objClone);
 
-			//In arrays, directly updating currentPropertiesClone
+			//If modifiedProperties is an array, directly updating currentPropertiesClone
 			//without decrementing the key will result in a "hole" at
 			//index 0 and may lead to the updates of wrong indices because the retainValue command
 			//occupies index 0 in modifiedProperties
 			let currentKey = Array.isArray(modifiedProperties) ? key - 1 : key;
-			let currentValue = getValue(currentProperties, currentKey);
+			let currentValue = getValue(obj, currentKey);
 			let modifiedValue = getValue(modifiedProperties, key);
 
 			let updatedProperty = deepUpdatePropertyValue(
 				currentValue,
-				modifiedValue,
-				shouldCreateMissingKeys,
-				retainUnchangedValuesCommand
+				modifiedValue
 			);
 
-			currentPropertiesClone[currentKey] = updatedProperty;
+			objClone[currentKey] = updatedProperty;
 		}
-		return currentPropertiesClone;
+		return objClone;
 	}
 
-	function deepUpdatePropertyValue(
-		currentValue,
-		modifiedValue,
-		shouldCreateMissingKeys,
-		retainUnchangedValuesCommand
-	) {
+	function deepUpdatePropertyValue(currentValue, modifiedValue) {
 		return deepUpdateObjectWithModifiedProperties(
 			currentValue,
-			modifiedValue,
-			shouldCreateMissingKeys,
-			retainUnchangedValuesCommand
+			modifiedValue
 		);
 	}
 
