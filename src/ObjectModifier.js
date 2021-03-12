@@ -94,7 +94,7 @@ const DeepUpdater = function (input) {
 
 			//If modifiedProperties is an array, directly updating currentPropertiesClone
 			//without decrementing the key will result in a "hole" at
-			//index 0 and may lead to the updates of wrong indices because the retainValue command
+			//index 0 and may lead to the updates of wrong indices because the retainmentCommand command
 			//occupies index 0 in modifiedProperties
 			let currentKey = Array.isArray(modifiedProperties) ? key - 1 : key;
 			let currentValue = getValue(obj, currentKey);
@@ -146,13 +146,13 @@ const DeepUpdater = function (input) {
 			: currentProperties[key];
 	}
 
-	function deepFilterOutRetainmentCommandFromObject(obj, retainValue) {
+	function deepFilterOutRetainmentCommandFromObject(obj) {
 		let [first] = Object.keys(obj);
 		let newObj;
 
-		if (obj[first] === retainValue) {
-			newObj = removeRetainValueFromObj(obj, first);
-			newObj = removeRetainValueFromChildren(newObj, retainValue);
+		if (obj[first] === retainmentCommand) {
+			newObj = removeRetainmentCommandFromObj(obj, first);
+			newObj = removeRetainmentCommandFromChildren(newObj);
 
 			return newObj;
 		} else {
@@ -160,38 +160,37 @@ const DeepUpdater = function (input) {
 		}
 	}
 
-	function removeRetainValueFromChildren(obj, retainValue) {
+	function removeRetainmentCommandFromChildren(obj) {
 		if (Array.isArray(obj))
 			return obj.map((e) =>
-				deepFilterOutRetainmentCommandFromObject(e, retainValue)
+				deepFilterOutRetainmentCommandFromObject(e)
 			);
 		else {
-			return removeRetainValueFromObjectChildren(obj, retainValue);
+			return removeRetainmentCommandFromObjectChildren(obj);
 		}
 	}
 
-	function removeRetainValueFromObjectChildren(obj, retainValue) {
+	function removeRetainmentCommandFromObjectChildren(obj) {
 		let objKeys = Object.keys(obj);
 		let newObj = { ...obj };
 
 		for (let key of objKeys) {
 			newObj[key] = deepFilterOutRetainmentCommandFromObject(
-				obj[key],
-				retainValue
+				obj[key]
 			);
 		}
 
 		return newObj;
 	}
 
-	function removeRetainValueFromObj(obj, retainValueKey) {
+	function removeRetainmentCommandFromObj(obj, retainmentCommandKey) {
 		let newObj;
 
 		if (obj instanceof Array) [, ...newObj] = obj;
 		else {
 			newObj = {};
 			Object.assign(newObj, obj);
-			delete newObj[retainValueKey];
+			delete newObj[retainmentCommandKey];
 		}
 
 		return newObj;
