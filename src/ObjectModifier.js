@@ -26,7 +26,7 @@ const ObjectModifier = class {
 };
 
 const DeepUpdater = function (input) {
-	let {createMissingKeys, retainmentCommand} = input;
+	let { createMissingKeys, retainmentCommand } = input;
 	this.performUpdate = performUpdate.bind(this);
 
 	function performUpdate() {
@@ -161,9 +161,7 @@ const DeepUpdater = function (input) {
 
 	function removeRetainmentCommandFromChildren(obj) {
 		if (Array.isArray(obj))
-			return obj.map((e) =>
-				deepFilterOutRetainmentCommandFromObject(e)
-			);
+			return obj.map((e) => deepFilterOutRetainmentCommandFromObject(e));
 		else {
 			return removeRetainmentCommandFromObjectChildren(obj);
 		}
@@ -174,9 +172,7 @@ const DeepUpdater = function (input) {
 		let newObj = { ...obj };
 
 		for (let key of objKeys) {
-			newObj[key] = deepFilterOutRetainmentCommandFromObject(
-				obj[key]
-			);
+			newObj[key] = deepFilterOutRetainmentCommandFromObject(obj[key]);
 		}
 
 		return newObj;
