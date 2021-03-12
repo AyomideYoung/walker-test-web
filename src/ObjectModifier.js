@@ -26,8 +26,7 @@ const ObjectModifier = class {
 };
 
 const DeepUpdater = function (input) {
-	let createMissingKeys = input.createMissingKeys;
-	let retainmentCommand = input.retainCommand;
+	let {createMissingKeys, retainmentCommand} = input;
 	this.performUpdate = performUpdate.bind(this);
 
 	function performUpdate() {
