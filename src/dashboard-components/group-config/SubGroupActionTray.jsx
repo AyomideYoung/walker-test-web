@@ -1,10 +1,9 @@
 import { createRef, useEffect } from "react";
 import { ButtonGroup, Button, Modal } from "react-bootstrap";
+import EditingEnvironment from "../../editor/EditingEnvironment";
 import bin from "../../images/bin2.svg";
 import qEdit from "../../images/q-edit.svg"
 import pencil from "../../images/pencil.svg";
-import DashboardHome from "../DashboardHome";
-import DashboardHomeSkeleton from "../../skeletons/DashboardHomeSkeleton"
 
 const SubGroupActionTray = function (props) {
 	let inputRef = createRef();
@@ -23,9 +22,9 @@ const SubGroupActionTray = function (props) {
 	let startEditingSubGroupQuestions = () => {
 		let url = composeSubGroupUrl();
 		props.updateScreen({
-			url: url,
-			ChildComponent: DashboardHome,
-			ChildSkeleton: DashboardHomeSkeleton
+			url: false,
+			props: [],
+			ChildComponent: EditingEnvironment
 		})
 	}
 

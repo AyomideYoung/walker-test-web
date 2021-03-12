@@ -203,7 +203,7 @@ td[disabled] {
 }
 
 .gray-btn{
-    background-color: #eaeaea;
+    background-color: #ededed;
 }
 
 .gray-btn:hover {
@@ -212,4 +212,8 @@ td[disabled] {
 
 .inline-block {
     display: inline-block;
+}
+
+.bg0 {
+    background-color: red;
 }

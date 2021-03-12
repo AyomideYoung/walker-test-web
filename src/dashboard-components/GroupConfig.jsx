@@ -95,11 +95,9 @@ const GroupConfig = (props) => {
 };
 
 //Get PropTypes
-//make sub group names editable
-//add button for sub groups
-//delete buttons for groups and sub groups
+//delete buttons for groups
 //animation onHide
-
-//consider the refactoring of modifyProperty to be more coherent
+//Finish GroupSettings
+//Add save button for settings
 
 export default GroupConfig;
