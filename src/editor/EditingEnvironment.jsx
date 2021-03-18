@@ -1,9 +1,15 @@
 import { Container, Row, Col } from "react-bootstrap";
 import Tree from "@naisutech/react-tree";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import {
+	ClassicEditor,
+	InlineEditor,
+} from "@ayomide-young/ckeditor5-build-classic-inline";
+import "./css/EditingEnvironment.css";
+import "./css/ck-theme.css";
 import QIcon from "./q-icon/QIcon";
 
+const ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const dummyData = [
 	{
 		id: 94939,
@@ -26,6 +32,32 @@ const dummyData = [
 	},
 ];
 
+const OptionEditor = (props) => {
+	return (
+		<div className={props.className}>
+			<Row className="align-items-baseline m-0 wt-option">
+				<Col xs="auto" className="option-label centered">
+					{ALPHABETS.charAt(props.index)}
+				</Col>
+				<Col className="bg-white option-edit">
+					<CKEditor editor={InlineEditor} data="<p></p>" />
+				</Col>
+			</Row>
+		</div>
+	);
+};
+
+const mapOptions = (index) => {
+	let optionArray = [];
+	for (let i = 0; i < index; i++) {
+		optionArray[i] = (
+			<OptionEditor className="my-1" key={i} index={i} data="<p></p>" />
+		);
+	}
+
+	return optionArray;
+};
+
 const iconSet = {
 	file: <QIcon />,
 };
@@ -42,9 +74,9 @@ let newTheme = {
 
 const EditingEnvironment = function (props) {
 	return (
-		<Container fluid>
+		<Container className="bg-white p-2">
 			<Row>
-				<Col className="ssp-regular">
+				<Col className="ssp-regular" md={4}>
 					<Tree
 						nodes={dummyData}
 						iconSet={iconSet}
@@ -55,9 +87,10 @@ const EditingEnvironment = function (props) {
 				<Col>
 					<CKEditor
 						editor={ClassicEditor}
-						disabled={true}
-						data="<p>Start Editing...</p>"
+						data="<p>Start Editing</p>"
 					/>
+					
+					{mapOptions(5)}
 				</Col>
 			</Row>
 		</Container>

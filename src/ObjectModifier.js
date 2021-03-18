@@ -16,7 +16,7 @@ const ObjectModifier = class {
 			obj: this.obj,
 			changedProperties: modifiedProperties,
 			createMissingKeys: shouldCreateMissingKeys,
-			retainCommand: this.retainUnchangedValuesCommand,
+			retainmentCommand: this.retainUnchangedValuesCommand,
 		};
 
 		this.obj = new DeepUpdater(input).performUpdate().getResult();
@@ -30,14 +30,11 @@ const DeepUpdater = function (input) {
 	this.performUpdate = performUpdate.bind(this);
 
 	function performUpdate() {
-		let result = deepUpdateObjectWithModifiedProperties(
-			input.obj,
-			input.changedProperties
-		);
+		let result = deepUpdateObject(input.obj, input.changedProperties);
 		return new ResultWrapper(result);
 	}
 
-	function deepUpdateObjectWithModifiedProperties(obj, mProps) {
+	function deepUpdateObject(obj, mProps) {
 		let result;
 		let isUnnecessaryUpdate = isDeepUpdateUnnecessary(obj, mProps);
 
@@ -48,7 +45,7 @@ const DeepUpdater = function (input) {
 	}
 
 	function isDeepUpdateUnnecessary(obj, mProps) {
-		let currentObjectHasNoProperties = obj === undefined || obj === {};
+		let currentObjectHasNoProperties = obj === undefined ||  Object.keys(obj).length === 0;
 		let shouldNotRetainUnchangedValues = !shouldRetainUnchangedValues(
 			mProps
 		);
@@ -57,7 +54,7 @@ const DeepUpdater = function (input) {
 	}
 
 	function useMPropsAsResult(obj, mProps) {
-		let currentObjectHasNoProperties = obj === undefined || obj === {};
+		let currentObjectHasNoProperties = obj === undefined || Object.keys(obj).length === 0;
 
 		if (!shouldRetainUnchangedValues(mProps)) {
 			return mProps;
@@ -84,7 +81,9 @@ const DeepUpdater = function (input) {
 
 	function deepUpdateEachChangedProperty(obj, modifiedProperties) {
 		let modifiedPropertiesKeys = getKeys(modifiedProperties);
+		//remove retainmentCommand's key
 		let [, ...actualmodifiedKeys] = modifiedPropertiesKeys;
+
 		let objClone = cloneObject(obj);
 
 		for (let key of actualmodifiedKeys) {
@@ -93,7 +92,7 @@ const DeepUpdater = function (input) {
 
 			//If modifiedProperties is an array, directly updating currentPropertiesClone
 			//without decrementing the key will result in a "hole" at
-			//index 0 and may lead to the updates of wrong indices because the retainmentCommand command
+			//index 0 and may lead to the updates of wrong indices because the retainmentCommand
 			//occupies index 0 in modifiedProperties
 			let currentKey = Array.isArray(modifiedProperties) ? key - 1 : key;
 			let currentValue = getValue(obj, currentKey);
@@ -110,10 +109,7 @@ const DeepUpdater = function (input) {
 	}
 
 	function deepUpdatePropertyValue(currentValue, modifiedValue) {
-		return deepUpdateObjectWithModifiedProperties(
-			currentValue,
-			modifiedValue
-		);
+		return deepUpdateObject(currentValue, modifiedValue);
 	}
 
 	function cloneObject(obj) {
