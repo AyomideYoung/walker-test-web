@@ -18,9 +18,9 @@ function GroupDashboard(props) {
 	let newGroupName = React.createRef();
 
 	const showFormModal = () => {
-		props.modifyState((currentState) => {
+		props.modifyState((retainValue) => {
 			return {
-				...currentState,
+				command: retainValue,
 				isFormModalVisible: true,
 				errorMsg: "",
 			};
@@ -30,8 +30,8 @@ function GroupDashboard(props) {
 	};
 
 	const hideFormModal = () => {
-		props.modifyState((currentState) => {
-			return { ...currentState, isFormModalVisible: false };
+		props.modifyState((retainValue) => {
+			return { command: retainValue, isFormModalVisible: false };
 		});
 	};
 

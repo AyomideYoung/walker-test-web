@@ -12,7 +12,7 @@ import "../css/SubGroupList.css";
 import arrow from "../../images/white-arrow.svg";
 import cross from "../../images/cross.svg";
 import cancel from "../../images/x-icon.svg";
-import { createRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import SubGroupActionTray from "./SubGroupActionTray";
 
 const PseudoElement = (props) => (
@@ -85,8 +85,8 @@ const PseudoElementContainer = (props) => {
 
 const SubGroupList = (props) => {
 	useEffect(() => hidePseudoElement, []);
-
-	let pseudoInput = createRef();
+	console.log(props.items);
+	let pseudoInput = useRef();
 	let updateSubGroups = (newGroup) => {
 		//add new sub group to groups
 	};

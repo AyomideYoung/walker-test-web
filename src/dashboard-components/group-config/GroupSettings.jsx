@@ -1,17 +1,16 @@
 import CallbackContext from "./CallbackContext";
-import { createRef } from "react";
+import { useRef } from "react";
 import Form from "react-bootstrap/Form";
 import PredefinedQuestionsFormToggle from "./PredefinedQuestionsFormToggle";
 import RandomQuestionsFormToggle from "./RandomQuestionsFormToggle";
-import SubGroupList from "./SubGroupList";
 
 const GroupSettings = (props) => {
-	let requiredRandomQuestionsInputRef = createRef();
-	let userSelectableRef = createRef();
-	let minSelectableRef = createRef();
-	let maxSelectableRef = createRef();
-	let hierarchyCheckboxRef = createRef();
-	let subGroupRequiredQuestionsRef = createRef();
+	let requiredRandomQuestionsInputRef = useRef();
+	let userSelectableRef = useRef();
+	let minSelectableRef = useRef();
+	let maxSelectableRef = useRef();
+	let hierarchyCheckboxRef = useRef();
+	let subGroupRequiredQuestionsRef = useRef();
 
 	const onMinSelectableChanged = () => {
 		setMinSelectable(parseInt(minSelectableRef.current.value));
@@ -74,7 +73,7 @@ const GroupSettings = (props) => {
 		props.modifyProperty(
 			number,
 			"subGroupProperties",
-			"groups",
+			"___groups",
 			subGroupIndex,
 			"numberOfRequiredQuestions"
 		);
