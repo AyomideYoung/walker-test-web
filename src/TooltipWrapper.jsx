@@ -32,9 +32,9 @@ function TooltipWrapper(props) {
 					);
 				} else if (c.type === Tip)
 					return (
-						<Overlay key={i} target={targetRef.current} show={show} placement="right">
+						<Overlay key={i} target={targetRef.current} show={show} placement="bottom">
 							{(props) => (
-								<Tooltip id="overlay-example" {...props}>
+								<Tooltip id="overlay-example" className="font-small" {...props}>
 									{c}
 								</Tooltip>
 							)}

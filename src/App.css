@@ -207,13 +207,21 @@ td[disabled] {
 }
 
 .gray-btn:hover {
-    background-color: #c2c2c2;
+    background-color: #d7d7d7;
 }
 
 .inline-block {
     display: inline-block;
 }
 
+.font-small {
+    font-size: 0.8rem;
+}
+
 .bg0 {
     background-color: red;
+}
+
+.big-round {
+    border-radius: 20px;
 }

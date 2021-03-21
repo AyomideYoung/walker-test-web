@@ -13,18 +13,26 @@
 }
 
 .bg-panel{
-    background-color: #d8d8d8;
+    background-color: #f3f3f3;
 }
 
 .wt-option{
     background-color: var(--wt-color);
-    border-right: 4px solid var(--wt-color);
+    border-right: 6px solid var(--wt-color);
     border-bottom: 1px solid #ededed;
     border-top: 1px solid #ededed;
     transition: width 2s;
 }
 
+.rotateZ {
+    transform: rotateZ(180deg);
+}
+
 .wt-option:focus-within {
     background-color: #00ca2b;
     border-color: #00ca2b;
+}
+
+.bg-gray{
+    background-color: #ededed;
 }
