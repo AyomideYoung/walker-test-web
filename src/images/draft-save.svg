@@ -7,9 +7,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="205.38496mm"
+   width="215.24039mm"
    height="177mm"
-   viewBox="0 0 205.38496 177"
+   viewBox="0 0 215.24038 177"
    version="1.1"
    id="svg8"
    inkscape:version="1.0.2 (e86c870, 2021-01-15)"
@@ -35,9 +35,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35"
-     inkscape:cx="553.16894"
-     inkscape:cy="442.91585"
+     inkscape:zoom="0.7"
+     inkscape:cx="706.18311"
+     inkscape:cy="299.56677"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -59,11 +59,11 @@
        orientation="0,-1"
        id="guide837" />
     <sodipodi:guide
-       position="0.769996,32.597566"
+       position="0.76999605,32.597566"
        orientation="1,0"
        id="guide839" />
     <sodipodi:guide
-       position="173.88308,96.853525"
+       position="173.88308,96.853524"
        orientation="1,0"
        id="guide841" />
     <sodipodi:guide
@@ -94,28 +94,31 @@
      transform="translate(-18.884766,-30.978516)">
     <path
        style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-feature-settings:normal;font-variation-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;shape-margin:0;inline-size:0;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;vector-effect:none;fill:#5c5c5c;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate;stop-color:#000000;stop-opacity:1"
-       d="m 21.166016,30.978516 a 2.2827283,2.2827283 0 0 0 -2.28125,2.283203 V 205.69727 a 2.2827283,2.2827283 0 0 0 2.28125,2.28125 H 201.4668 a 2.2827283,2.2827283 0 0 0 2.2832,-2.28125 v -23.6211 h -4.56641 v 21.33789 H 23.449219 V 35.544922 H 164.31836 l 34.86523,34.109375 V 91.527344 H 203.75 V 68.693359 A 2.2827283,2.2827283 0 0 0 203.0625,67.0625 L 166.8457,31.630859 A 2.2827283,2.2827283 0 0 0 165.25,30.978516 Z"
-       id="path874" />
+       d="m 21.166016,30.978516 c -1.260324,8.16e-4 -2.281512,1.022879 -2.28125,2.283203 V 205.69727 c 8.15e-4,1.25956 1.021688,2.28043 2.28125,2.28125 H 201.4668 c 1.26032,2.6e-4 2.28238,-1.02093 2.2832,-2.28125 v -23.6211 h -4.56641 v 21.33789 H 23.449219 V 35.544922 H 164.31836 l 34.86523,34.109375 0.75595,8.265904 h 3.43248 L 203.75,68.693359 c -5.3e-4,-0.613954 -0.24834,-1.201813 -0.6875,-1.630859 L 166.8457,31.630859 c -0.42619,-0.417652 -0.99898,-0.651816 -1.5957,-0.652343 z"
+       id="path874"
+       sodipodi:nodetypes="cccccccccccccccccccc" />
     <path
        id="rect895"
        style="fill:#5c5c5c;fill-opacity:1;stroke:#464846;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
-       d="m 33.102149,116.56667 v 67.71421 H 179.76658 v -4.36407 h -11.89265 v -63.35014 z" />
+       d="m 33.102149,116.56667 v 67.71421 H 174.47491 v -4.36407 h -11.46356 v -63.35014 z" />
     <path
        id="rect897"
        style="fill:#5c5c5c;fill-opacity:1;stroke:#464846;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
-       d="M 33.102117,56.126946 V 98.645543 H 133.09406 V 76.599062 h 13.38496 v 22.046481 h 32.28076 V 56.126946 Z" />
-    <g
-       aria-label="D"
-       id="text904"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:98.0722px;line-height:1.25;font-family:'Arial Nova';-inkscape-font-specification:'Arial Nova Bold Condensed';letter-spacing:0px;word-spacing:0px;fill:#5c5c5c;fill-opacity:1;stroke:none;stroke-width:0.264583">
-      <path
-         d="m 224.26973,138.2208 q 0,13.45619 -2.34646,21.50118 -2.29856,8.04498 -7.75766,11.87593 -5.41121,3.78306 -14.94069,3.78306 H 175.76038 V 105.1789 h 22.45892 q 9.72102,0 15.41955,3.83094 5.74642,3.83095 8.18865,11.06185 2.44223,7.23091 2.44223,18.14911 z m -35.19681,26.09831 h 7.27879 q 6.51261,0 9.52948,-3.01687 3.06476,-3.01687 3.78306,-7.80555 0.76619,-4.83657 0.76619,-13.26465 0,-10.24777 -1.38872,-15.32378 -1.38872,-5.076 -4.54925,-6.84781 -3.11264,-1.8197 -9.09849,-1.8197 h -6.32106 z"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:98.0722px;font-family:'Arial Nova';-inkscape-font-specification:'Arial Nova Bold Condensed';fill:#5c5c5c;fill-opacity:1;stroke-width:0.264583"
-         id="path918" />
-    </g>
+       d="M 33.102117,56.126946 V 98.645543 H 124.2719 V 76.599062 h 12.20402 v 22.046481 h 29.43267 V 56.126946 Z" />
     <g
        aria-label="D"
        id="text912"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:98.0722px;line-height:1.25;font-family:'Arial Nova';-inkscape-font-specification:'Arial Nova Bold Condensed';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:128.764px;line-height:1.25;font-family:'Arial Nova';-inkscape-font-specification:'Arial Nova Bold Condensed';letter-spacing:0px;word-spacing:0px;fill:#5c5c5c;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="161.0038"
+       y="173.47554"
+       id="text854"><tspan
+         sodipodi:role="line"
+         id="tspan852"
+         x="161.0038"
+         y="173.47554"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:128.764px;font-family:'Arial Nova';-inkscape-font-specification:'Arial Nova Bold Condensed';fill:#5c5c5c;fill-opacity:1;stroke-width:0.264583">D</tspan></text>
   </g>
 </svg>

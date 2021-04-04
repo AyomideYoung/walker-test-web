@@ -1,6 +1,6 @@
 import { Container, Row, Col, Button } from "react-bootstrap";
 import TooltipWrapper from "../TooltipWrapper";
-import Tree from "@naisutech/react-tree";
+import Tree from "../Tree";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import {
 	ClassicEditor,
@@ -37,10 +37,10 @@ const dummyData = [
 ];
 
 const EditorTray = (props) => (
-	<Container className="bg-gray d-flex flex-row-reverse" fluid>
+	<Container className="bg-gray d-flex flex-row-reverse my-1" fluid>
 		<TooltipWrapper>
 			<TooltipWrapper.Target hover>
-				<Button className="gray-btn" size="sm" variant="none">
+				<Button className="gray-btn"  variant="none">
 					<img
 						src={preview_icon}
 						width="25px"
@@ -53,7 +53,7 @@ const EditorTray = (props) => (
 		</TooltipWrapper>
 		<TooltipWrapper>
 			<TooltipWrapper.Target hover>
-				<Button className="gray-btn" size="sm" variant="none">
+				<Button className="gray-btn" variant="none">
 					<img
 						src={save_draft}
 						width="22px"
@@ -66,7 +66,7 @@ const EditorTray = (props) => (
 		</TooltipWrapper>
 		<TooltipWrapper>
 			<TooltipWrapper.Target hover>
-				<Button className="gray-btn" size="sm" variant="none">
+				<Button className="gray-btn" variant="none">
 					<img
 						src={arrow1}
 						width="16px"
@@ -79,7 +79,7 @@ const EditorTray = (props) => (
 		</TooltipWrapper>
 		<TooltipWrapper>
 			<TooltipWrapper.Target hover>
-				<Button className="gray-btn" size="sm" variant="none">
+				<Button className="gray-btn" variant="none">
 					<img
 						className="rotateZ"
 						src={arrow1}
@@ -113,7 +113,7 @@ const mapOptions = (index) => {
 	let optionArray = [];
 	for (let i = 0; i < index; i++) {
 		optionArray[i] = (
-			<OptionEditor className="my-1" key={i} index={i} data="<p></p>" />
+			<OptionEditor className="my-1 ssp-black" key={i} index={i} data="<p></p>" />
 		);
 	}
 
@@ -145,6 +145,7 @@ const EditingEnvironment = function (props) {
 						theme="wt_theme"
 						customTheme={newTheme}
 					/>
+					
 				</Col>
 				<Col>
 					<EditorTray />
@@ -153,7 +154,7 @@ const EditingEnvironment = function (props) {
 						data="<p>Start Editing</p>"
 					/>
 
-					{mapOptions(5)}
+					{mapOptions(4)}
 				</Col>
 			</Row>
 		</Container>

@@ -1,11 +1,12 @@
 :root{
     --wt-color: #119618;
+    --wt-grey: #d5d5d5;
 }
 
 .option-label {
     height: 100%;
     width: 50px;
-    color: white;
+    color: black;
 }
 
 .option-edit{
@@ -17,8 +18,8 @@
 }
 
 .wt-option{
-    background-color: var(--wt-color);
-    border-right: 6px solid var(--wt-color);
+    background-color: var(--wt-grey);
+    border-right: 6px solid var(--wt-grey);
     border-bottom: 1px solid #ededed;
     border-top: 1px solid #ededed;
     transition: width 2s;
@@ -29,10 +30,35 @@
 }
 
 .wt-option:focus-within {
-    background-color: #00ca2b;
-    border-color: #00ca2b;
+    background-color: var(--wt-color);
+    border-color: var(--wt-color);
+}
+
+.wt-option:focus-within .option-label{
+    color: white;
 }
 
 .bg-gray{
     background-color: #ededed;
+}
+
+.TreeItem{
+    padding-left: 8px !important;
+}
+
+.TreeItem-label{
+    font-size: 16px !important;
+}
+
+
+.TreeItem-icon {
+    color: #0bb431 !important;
+}
+
+.TreeItem-selected, .TreeItem-selected *{
+    background-color: #fafafa !important;
+}
+
+.TreeItem-icon svg{
+    font-size: 14px !important;
 }
