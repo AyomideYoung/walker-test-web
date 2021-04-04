@@ -62,27 +62,6 @@ let data = {
 	],
 };
 
-let modelData = {
-	id: "i",
-	children: [
-		{
-			id: "ft",
-			name: "cummueil",
-			children: [
-				{
-					id: "rt",
-					children: [
-						{
-							id: "2",
-							data: "Cols",
-						},
-					],
-				},
-			],
-		},
-	],
-};
-
 class ModelActions {
 	constructor(data = null) {
 		this.data = data;
@@ -203,13 +182,5 @@ const Tree = (props) => {
 		</TreeView>
 	);
 };
-
-function testModel() {
-	let myActions = new ModelActions(modelData);
-	myActions.traverse();
-	console.log(myActions.getData());
-}
-
-testModel();
 
 export default Tree;
