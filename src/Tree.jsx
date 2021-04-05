@@ -13,8 +13,12 @@ function hasNoChildren(data) {
 	return data.children === undefined || data.children.length === 0;
 }
 
-function isCurrentItemInTrack(data, ids) {
+function matchesExpectedId(data, ids) {
 	return data.id === ids[0];
+}
+
+function isTargetNode(data, ids) {
+	return data.id === ids[0] && ids.length === 1;
 }
 
 function createBranch(data) {
@@ -64,27 +68,29 @@ let data = {
 
 class ModelActions {
 	constructor(data = null, delimiter = "/") {
-
 		this.data = data;
 		this.selected = null;
 		this.delimiter = delimiter;
 	}
 
-	_traverseChildrenToUpdateTarget(data, ids, updater) {
-		if (this.isTargetNode(data, ids)) return updater(data);
-		else if (isCurrentItemInTrack(data, ids))
-			return this._findNextItemInChildrenAndUpdate(data, ids, updater);
-		else
-			throw new Error(
-				`No child with id exists. Found children until ${ids[0]}`
-			);
+	updateItem(data, itemTrack, updateFn) {
+		let doesNotMatchExpectedId = !matchesExpectedId(data, itemTrack);
+		let isNotTargetNode = !isTargetNode(data, itemTrack);
+
+		if (doesNotMatchExpectedId)
+			this.throwNoMatchError(itemTrack);
+			
+		else if (isNotTargetNode)
+			return this._updateExpectedChild(data, itemTrack, updateFn);
+
+		else return updateFn(data);
 	}
 
-	_convertTrackStringtoArray(trackString){
+	_convertTrackStringtoArray(trackString) {
 		return trackString.split(this.delimiter);
 	}
 
-	_findNextItemInChildrenAndUpdate(data, ids, updater) {
+	_updateExpectedChild(data, ids, updateFn) {
 		let [parentId, specifiedChildId] = ids;
 
 		if (hasNoChildren(data))
@@ -94,13 +100,10 @@ class ModelActions {
 			let child = data.children[i];
 
 			if (child.id === specifiedChildId) {
-				return this._updateParentWithModifiedChildData(
-					data,
-					child,
-					i,
-					ids,
-					updater
-				);
+				let updatedChild = this._updateChild(child, ids, updateFn)
+				let updatedParent = this._updateParentWithResult(data, updatedChild, i);
+
+				return updatedParent;
 			}
 		}
 
@@ -108,22 +111,24 @@ class ModelActions {
 		throw new Error(`No child with id ${specifiedChildId} was found`);
 	}
 
-	_updateParentWithModifiedChildData(data, child, childIndex, ids, updater) {
+	_updateChild(child, ids, updateFn) {
 		let [, ...remainingIds] = ids;
-		let { ...dataClone } = data;
 
-		let modifiedChildData = this._traverseChildrenToUpdateTarget(
-			child,
-			remainingIds,
-			updater
-		);
-		dataClone.children[childIndex] = modifiedChildData;
+		let updatedChild = this.updateItem(child, remainingIds, updateFn);
+
+		return updatedChild;
+	}
+
+	_updateParentWithResult(parent, result, resultIndex){
+		let { ...dataClone } = parent;
+
+		dataClone.children[resultIndex] = result;
 
 		return dataClone;
 	}
 
 	_traverseToFetch(data, ids) {
-		if (this.isTargetNode(data, ids)) {
+		if (isTargetNode(data, ids)) {
 			return data;
 		} else if (data.id === ids[0]) {
 			return this._traverseChildren(data, ids);
@@ -145,11 +150,6 @@ class ModelActions {
 			}
 		}
 	}
-
-	isTargetNode(data, ids) {
-		return data.id === ids[0] && ids.length === 1;
-	}
-
 	addItem(item) {
 		let addFunction = (data) => {
 			let clone = { ...data };
@@ -159,7 +159,7 @@ class ModelActions {
 		};
 
 		let ids = this._convertTrackStringtoArray(item.track);
-		this._traverseChildrenToUpdateTarget(this.data, ids, addFunction);
+		this.updateItem(this.data, ids, addFunction);
 	}
 
 	deleteItem(item) {}
@@ -189,6 +189,12 @@ class ModelActions {
 	nextItem() {}
 
 	previousItem() {}
+
+	throwNoMatchError(itemTrack){
+		throw new Error(
+			`No child with id exists. Found children until ${itemTrack[0]}`
+		);
+	}
 }
 
 const Tree = (props) => {
