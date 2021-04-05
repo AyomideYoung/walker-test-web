@@ -63,24 +63,28 @@ let data = {
 };
 
 class ModelActions {
-	constructor(data = null) {
+	constructor(data = null, delimiter = "/") {
+
 		this.data = data;
 		this.selected = null;
+		this.delimiter = delimiter;
 	}
 
-	traverseChildrenToUpdateTarget(data, ids, updater) {
+	_traverseChildrenToUpdateTarget(data, ids, updater) {
 		if (this.isTargetNode(data, ids)) return updater(data);
-
 		else if (isCurrentItemInTrack(data, ids))
-			return this.findNextItemInChildrenAndUpdate(data, ids, updater);
-
+			return this._findNextItemInChildrenAndUpdate(data, ids, updater);
 		else
 			throw new Error(
 				`No child with id exists. Found children until ${ids[0]}`
 			);
 	}
 
-	findNextItemInChildrenAndUpdate(data, ids, updater) {
+	_convertTrackStringtoArray(trackString){
+		return trackString.split(this.delimiter);
+	}
+
+	_findNextItemInChildrenAndUpdate(data, ids, updater) {
 		let [parentId, specifiedChildId] = ids;
 
 		if (hasNoChildren(data))
@@ -90,7 +94,13 @@ class ModelActions {
 			let child = data.children[i];
 
 			if (child.id === specifiedChildId) {
-				return this.updateParentWithModifiedChildData(data, child, i, ids, updater);
+				return this._updateParentWithModifiedChildData(
+					data,
+					child,
+					i,
+					ids,
+					updater
+				);
 			}
 		}
 
@@ -98,11 +108,11 @@ class ModelActions {
 		throw new Error(`No child with id ${specifiedChildId} was found`);
 	}
 
-	updateParentWithModifiedChildData(data, child, childIndex, ids, updater) {
+	_updateParentWithModifiedChildData(data, child, childIndex, ids, updater) {
 		let [, ...remainingIds] = ids;
 		let { ...dataClone } = data;
 
-		let modifiedChildData = this.traverseChildrenToUpdateTarget(
+		let modifiedChildData = this._traverseChildrenToUpdateTarget(
 			child,
 			remainingIds,
 			updater
@@ -112,11 +122,11 @@ class ModelActions {
 		return dataClone;
 	}
 
-	traverseToFetch(data, ids) {
+	_traverseToFetch(data, ids) {
 		if (this.isTargetNode(data, ids)) {
 			return data;
 		} else if (data.id === ids[0]) {
-			return this.traverseChildren(data, ids);
+			return this._traverseChildren(data, ids);
 		} else {
 			throw new Error(
 				`No child with id exists. Found children until ${ids[0]}`
@@ -124,14 +134,14 @@ class ModelActions {
 		}
 	}
 
-	traverseChildren(data, ids) {
+	_traverseChildren(data, ids) {
 		if (hasNoChildren(data))
 			throw new Error(`Item ${ids[0]} has no children`);
 
 		for (let child of data.children) {
 			if (child.id === ids[1]) {
 				let [, ...remainingIds] = ids;
-				return this.traverseToFetch(child, remainingIds);
+				return this._traverseToFetch(child, remainingIds);
 			}
 		}
 	}
@@ -140,7 +150,17 @@ class ModelActions {
 		return data.id === ids[0] && ids.length === 1;
 	}
 
-	addItem(item) {}
+	addItem(item) {
+		let addFunction = (data) => {
+			let clone = { ...data };
+			clone.children.push(item);
+
+			return clone;
+		};
+
+		let ids = this._convertTrackStringtoArray(item.track);
+		this._traverseChildrenToUpdateTarget(this.data, ids, addFunction);
+	}
 
 	deleteItem(item) {}
 
