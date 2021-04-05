@@ -77,12 +77,9 @@ class ModelActions {
 		let doesNotMatchExpectedId = !matchesExpectedId(data, itemTrack);
 		let isNotTargetNode = !isTargetNode(data, itemTrack);
 
-		if (doesNotMatchExpectedId)
-			this.throwNoMatchError(itemTrack);
-			
+		if (doesNotMatchExpectedId) this.throwNoMatchError(itemTrack);
 		else if (isNotTargetNode)
 			return this._updateExpectedChild(data, itemTrack, updateFn);
-
 		else return updateFn(data);
 	}
 
@@ -90,19 +87,18 @@ class ModelActions {
 		return trackString.split(this.delimiter);
 	}
 
-	_updateExpectedChild(data, ids, updateFn) {
+	_updateExpectedChild(parent, ids, updateFn) {
 		let [parentId, specifiedChildId] = ids;
 
-		if (hasNoChildren(data))
+		if (hasNoChildren(parent))
 			throw new Error(`Item ${parentId} has no children`);
 
-		for (let i = 0; i < data.children.length; i++) {
-			let child = data.children[i];
-
+		for (let i = 0; i < parent.children.length; i++) {
+			let child = parent.children[i];
+			
 			if (child.id === specifiedChildId) {
-				let updatedChild = this._updateChild(child, ids, updateFn)
-				let updatedParent = this._updateParentWithResult(data, updatedChild, i);
-
+				let updatedChild = this._updateChild(child, ids, updateFn);
+				let updatedParent = this._updateParentWithResult(parent, updatedChild, i);
 				return updatedParent;
 			}
 		}
@@ -119,7 +115,7 @@ class ModelActions {
 		return updatedChild;
 	}
 
-	_updateParentWithResult(parent, result, resultIndex){
+	_updateParentWithResult(parent, result, resultIndex) {
 		let { ...dataClone } = parent;
 
 		dataClone.children[resultIndex] = result;
@@ -190,7 +186,7 @@ class ModelActions {
 
 	previousItem() {}
 
-	throwNoMatchError(itemTrack){
+	throwNoMatchError(itemTrack) {
 		throw new Error(
 			`No child with id exists. Found children until ${itemTrack[0]}`
 		);
