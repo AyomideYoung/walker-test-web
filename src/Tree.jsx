@@ -77,7 +77,8 @@ class ModelActions {
 		let doesNotMatchExpectedId = !matchesExpectedId(data, itemTrack);
 		let isNotTargetNode = !isTargetNode(data, itemTrack);
 
-		if (doesNotMatchExpectedId) this.throwNoMatchError(itemTrack);
+		if (doesNotMatchExpectedId) 
+			this.throwNoMatchError(itemTrack);
 		else if (isNotTargetNode)
 			return this._updateExpectedChild(data, itemTrack, updateFn);
 		else return updateFn(data);
@@ -87,17 +88,17 @@ class ModelActions {
 		return trackString.split(this.delimiter);
 	}
 
-	_updateExpectedChild(parent, ids, updateFn) {
-		let [parentId, specifiedChildId] = ids;
+	_updateExpectedChild(parent, itemTrack, updateFn) {
+		let [parentId, specifiedChildId] = itemTrack;
 
 		if (hasNoChildren(parent))
 			throw new Error(`Item ${parentId} has no children`);
 
 		for (let i = 0; i < parent.children.length; i++) {
 			let child = parent.children[i];
-			
+
 			if (child.id === specifiedChildId) {
-				let updatedChild = this._updateChild(child, ids, updateFn);
+				let updatedChild = this._updateChild(child, itemTrack, updateFn);
 				let updatedParent = this._updateParentWithResult(parent, updatedChild, i);
 				return updatedParent;
 			}
@@ -149,8 +150,11 @@ class ModelActions {
 	addItem(item) {
 		let addFunction = (data) => {
 			let clone = { ...data };
-			clone.children.push(item);
+			
+			if(hasNoChildren(clone))
+				clone.children = [];
 
+			clone.children.push(item);
 			return clone;
 		};
 
@@ -158,7 +162,9 @@ class ModelActions {
 		this.updateItem(this.data, ids, addFunction);
 	}
 
-	deleteItem(item) {}
+	deleteItem(item) {
+
+	}
 
 	addAbsolute(track, item) {}
 
