@@ -77,11 +77,13 @@ class ModelActions {
 		let doesNotMatchExpectedId = !matchesExpectedId(data, itemTrack);
 		let isNotTargetNode = !isTargetNode(data, itemTrack);
 
-		if (doesNotMatchExpectedId) 
+		if (doesNotMatchExpectedId) {
 			this.throwNoMatchError(itemTrack);
-		else if (isNotTargetNode)
+		} else if (isNotTargetNode) {
 			return this._updateExpectedChild(data, itemTrack, updateFn);
-		else return updateFn(data);
+		} else {
+			return updateFn(data);
+		}
 	}
 
 	_convertTrackStringtoArray(trackString) {
@@ -98,8 +100,16 @@ class ModelActions {
 			let child = parent.children[i];
 
 			if (child.id === specifiedChildId) {
-				let updatedChild = this._updateChild(child, itemTrack, updateFn);
-				let updatedParent = this._updateParentWithResult(parent, updatedChild, i);
+				let updatedChild = this._updateChild(
+					child,
+					itemTrack,
+					updateFn
+				);
+				let updatedParent = this._updateParentWithResult(
+					parent,
+					updatedChild,
+					i
+				);
 				return updatedParent;
 			}
 		}
@@ -148,34 +158,50 @@ class ModelActions {
 		}
 	}
 
-	_throwInvalidDataError(){
-		if(this.data === null)
-			throw new Error("Data property is null. Initialize it first by calling setData(<obj>)");
-		else if (this.data.id === undefined || this.data.id === null){
+	_throwInvalidDataError() {
+		if (this.data === null)
+			throw new Error(
+				"Data property is null. Initialize it first by calling setData(<obj>)"
+			);
+		else if (this.data.id === undefined || this.data.id === null) {
 			throw new Error("The root object does not have an id");
 		}
 	}
 
 	addItem(item) {
-		let addFunction = (data) => {
+		const addFunction = (data) => {
 			let clone = { ...data };
-			
-			if(hasNoChildren(clone))
-				clone.children = [];
+
+			if (hasNoChildren(clone)) clone.children = [];
 
 			clone.children.push(item);
 			return clone;
 		};
 		let ids = this._convertTrackStringtoArray(item.track);
 
-		if(data === null || data.id === undefined)
+		if (data === null || data.id === undefined)
 			this._throwInvalidDataError();
-		
-		this.updateItem(this.data, ids, addFunction);
+
+		let updatedData = this.updateItem(this.data, ids, addFunction);
+		this.data = updatedData;
 	}
 
 	deleteItem(item) {
+		let deleteFunction = (data) => {
+			let clone = { ...data };
 
+			if (hasNoChildren(data)) {
+				return data;
+			} else {
+				let filtered = clone.children.filter((e) => e.id !== item.id);
+				clone.children = filtered;
+				return clone;
+			}
+		};
+
+		let itemParentTrack = this._convertTrackStringtoArray(item.track);
+		let updatedData = this.updateItem(this.data, itemParentTrack, deleteFunction);
+		this.data = updatedData;
 	}
 
 	addAbsolute(track, item) {}
@@ -197,7 +223,7 @@ class ModelActions {
 	}
 
 	getData() {
-		return this.data;
+		return {...this.data};
 	}
 
 	nextItem() {}
