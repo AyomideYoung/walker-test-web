@@ -147,6 +147,15 @@ class ModelActions {
 			}
 		}
 	}
+
+	_throwInvalidDataError(){
+		if(this.data === null)
+			throw new Error("Data property is null. Initialize it first by calling setData(<obj>)");
+		else if (this.data.id === undefined || this.data.id === null){
+			throw new Error("The root object does not have an id");
+		}
+	}
+
 	addItem(item) {
 		let addFunction = (data) => {
 			let clone = { ...data };
@@ -157,8 +166,11 @@ class ModelActions {
 			clone.children.push(item);
 			return clone;
 		};
-
 		let ids = this._convertTrackStringtoArray(item.track);
+
+		if(data === null || data.id === undefined)
+			this._throwInvalidDataError();
+		
 		this.updateItem(this.data, ids, addFunction);
 	}
 
