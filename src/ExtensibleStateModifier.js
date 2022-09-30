@@ -1,0 +1,81 @@
+class ExtensibleStateModifier {
+	constructor(parent, propertyKeys, data) {
+		this._data = data;
+		this.parent = parent;
+		this._propertyKeys = propertyKeys;
+
+        this.afterSet = this._afterSet.bind(this);
+        this.get = this.get.bind(this);
+        this.encapsulate = this.encapsulate.bind(this);
+        this.setCallback = this.setCallback.bind(this);
+        this.set = this.set.bind(this);
+	}
+
+	encapsulate(...propertyKeys) {
+		return new ExtensibleStateModifier(this, propertyKeys);
+		//Mechanism 1
+		//set receives an object and performs operation on it
+		//if this was created straight from data
+		//set will replace the data with new object
+		//if created via encapsulation however, set would have to delegate
+		//to the parent by taking the new object, finding the propertyNames that it is
+		//encapsulating and updating the data and then passing the data to the parent's set
+
+		//TODO afterSet
+	}
+
+	setCallback(callbackFn) {
+		this.__callbackFn = callbackFn;
+	}
+
+	_getPropertyToModify(parentData) {
+		let propertyToModify;
+		for (let i = 0; i < this._propertyKeys.length; i++) {
+			if (i === 0) {
+				propertyToModify = parentData[this._propertyKeys[i]];
+			} else {
+				propertyToModify = propertyToModify[this._propertyKeys[i]];
+			}
+		}
+
+        return propertyToModify;
+	}
+
+    _updateInParentData(parentData, value,propKeys){
+        let [currentKey, ...latterKeys] = propKeys;
+        if(propKeys.length > 1){
+            parentData[currentKey] = this._updateInParentData(parentData[currentKey], value, latterKeys);
+        } else {
+            parentData[currentKey] = value;
+        }
+
+        return parentData;
+    }
+
+	set(newData) {
+		if (!this.parent) {
+			this._data = newData;
+			this._afterSet();
+			return;
+		} else if (this.parent) {
+			let parentData = { ...this.parent.get() };
+
+			this._updateInParentData(parentData, newData, this._propertyKeys);
+			this.parent.set(parentData);
+
+			this._afterSet();
+		}
+	}
+
+	_afterSet() {
+		if (this.__callbackFn && typeof this.__callbackFn === "function") {
+			this.__callbackFn();
+		}
+	}
+
+	get() {
+		return this.parent ? this._getPropertyToModify(this.parent.get()) : this._data;
+	}
+}
+
+export default ExtensibleStateModifier;
