@@ -1,16 +1,44 @@
 class ExtensibleStateModifier {
 	constructor(parent, propertyKeys, data) {
+		/**
+		 * @private
+		 */
 		this._data = data;
+		/**
+		 * @private
+		 */
 		this.parent = parent;
+		/**
+		 * @private
+		 */
 		this._propertyKeys = propertyKeys;
 
-        this.afterSet = this._afterSet.bind(this);
-        this.get = this.get.bind(this);
-        this.encapsulate = this.encapsulate.bind(this);
-        this.setCallback = this.setCallback.bind(this);
-        this.set = this.set.bind(this);
+		/**
+		 * @private
+		 */
+		this._afterSet = this._afterSet.bind(this);
+		/**
+		 * @private
+		 */
+		this.__callbackFn = () => {};
+		this.get = this.get.bind(this);
+		this.encapsulate = this.encapsulate.bind(this);
+		this.setCallback = this.setCallback.bind(this);
+		this.set = this.set.bind(this);
 	}
 
+	/**
+	 * Creates a new based on this one.
+	 * @param  {...string|number} propertyKeys a path to the property
+	 * this is allowed to modify.
+	 * This property is accessed by
+	 * ```javascript
+	 * this.data[propertyKeys[0]][propertyKeys[1]]...[propertyKeys[n]]
+	 * ```
+	 *
+	 * @returns
+	 * a new ExtensibleStateModifier with this one as a parent.
+	 */
 	encapsulate(...propertyKeys) {
 		return new ExtensibleStateModifier(this, propertyKeys);
 		//Mechanism 1
@@ -24,10 +52,15 @@ class ExtensibleStateModifier {
 		//TODO afterSet
 	}
 
+	/**
+	 * Sets the callback to be called after set() operation is complete
+	 * @param {function} callbackFn
+	 */
 	setCallback(callbackFn) {
 		this.__callbackFn = callbackFn;
 	}
 
+	/** @private */
 	_getPropertyToModify(parentData) {
 		let propertyToModify;
 		for (let i = 0; i < this._propertyKeys.length; i++) {
@@ -38,20 +71,33 @@ class ExtensibleStateModifier {
 			}
 		}
 
-        return propertyToModify;
+		return propertyToModify;
 	}
 
-    _updateInParentData(parentData, value,propKeys){
-        let [currentKey, ...latterKeys] = propKeys;
-        if(propKeys.length > 1){
-            parentData[currentKey] = this._updateInParentData(parentData[currentKey], value, latterKeys);
-        } else {
-            parentData[currentKey] = value;
-        }
+	/**
+	 * @private
+	 */
+	_updateInParentData(parentData, value, propKeys) {
+		let [currentKey, ...latterKeys] = propKeys;
+		if (propKeys.length > 1) {
+			parentData[currentKey] = this._updateInParentData(
+				parentData[currentKey],
+				value,
+				latterKeys
+			);
+		} else {
+			parentData[currentKey] = value;
+		}
 
-        return parentData;
-    }
+		return parentData;
+	}
 
+	/**
+	 * Sets the data of this {@class ExtensibleStateModifier}. The sets the subset of the parent
+	 * data it is allowed to modify if a parent {@class ExtensibleStateModifier} is present.
+	 * @param {*} newData the new data
+	 *
+	 */
 	set(newData) {
 		if (!this.parent) {
 			this._data = newData;
@@ -67,14 +113,23 @@ class ExtensibleStateModifier {
 		}
 	}
 
+	/**@private */
 	_afterSet() {
 		if (this.__callbackFn && typeof this.__callbackFn === "function") {
 			this.__callbackFn();
 		}
 	}
 
+	/**
+	 * Gets the current data or the subset of the parent's current data
+	 * it is allowed to see and modify
+	 * @returns {object} the data used to construct this object or the subset of parent data
+	 * it is allowed to see.
+	 */
 	get() {
-		return this.parent ? this._getPropertyToModify(this.parent.get()) : this._data;
+		return this.parent
+			? this._getPropertyToModify(this.parent.get())
+			: this._data;
 	}
 }
 
