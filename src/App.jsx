@@ -5,6 +5,7 @@ import DashboardHome from "./dashboard-components/DashboardHome";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import ObjectModifier from "./ObjectModifier";
+import { ROOT_MODIFIER } from "./state-methods";
 
 const App = class App extends React.Component {
 	constructor(props) {
@@ -12,6 +13,7 @@ const App = class App extends React.Component {
 		this.loadDataIntoState = this.loadDataIntoState.bind(this);
 		this.updateScreen = this.updateScreen.bind(this);
 		this.stateModifier = new ObjectModifier(this.state);
+		this.altStateModifier = ROOT_MODIFIER;
 		this.currentRequestId = 0;
 		this.state = {
 			errorMessageAvailable: false,
@@ -22,6 +24,11 @@ const App = class App extends React.Component {
 			url: "http://localhost:8080/db/home",
 		};
 
+		this.altStateModifier._data = this.state;
+		this.altStateModifier.setCallback(() => {
+			this.setState(this.altStateModifier.get());
+		});
+		
 		this.modifyChildState = this.modifyChildState.bind(this);
 		this.clearErrorMsg = this.clearErrorMsg.bind(this);
 		this.setErrorMsg = this.setErrorMsg.bind(this);
@@ -32,43 +39,33 @@ const App = class App extends React.Component {
 			<ErrorModal
 				show={true}
 				errorMsg={this.state.errorMsg}
-				onHide={this.clearErrorMsg}
+				onHide={this.altClearErrorMsg}
 			/>
 		);
 	}
 
-	updateState(modifiedProperties, shouldCreateMissingKeys) {
-		let modifiedState = this.stateModifier.deepUpdateObject(
-			modifiedProperties,
-			shouldCreateMissingKeys
-		);
-		this.setState({ ...modifiedState });
+
+	updateState(newStateObj) {
+		this.altStateModifier.set(newStateObj);
 	}
 
 	updateScreen(params) {
 		if (params.url === false) {
-			this.updateState(
-				{
-					command: this.stateModifier.getRetainUnchangedValuesCommand(),
-					invalidated: false,
-					ChildComponent: params.ChildComponent,
-					childState: params.props,
-				},
-				true
-			);
-			return;
-		}
-
-		this.updateState(
-			{
-				command: this.stateModifier.getRetainUnchangedValuesCommand(),
+			this.updateState({
+				...this.state,
+				invalidated: false,
+				ChildComponent: params.ChildComponent,
+				childState: params.props,
+			});
+		} else {
+			this.updateState({
+				...this.state,
 				ChildSkeleton: params.ChildSkeleton,
 				ChildComponent: params.ChildComponent,
 				url: params.url,
 				invalidated: true,
-			},
-			true
-		);
+			});
+		}
 	}
 
 	updateChildState(newState) {
@@ -81,6 +78,8 @@ const App = class App extends React.Component {
 		);
 	}
 
+	//altUpdateChild will be accessed from state-methods
+
 	modifyChildState(fn) {
 		this.updateChildState(
 			fn(
@@ -89,42 +88,37 @@ const App = class App extends React.Component {
 			)
 		);
 	}
+	//altModifyChild will be accessed from state-methods
+	//all they have to do is ensure that they don't override
+	//already existing data
 
+	
 	loadDataIntoState(data) {
 		if (data == null) return;
 
-		this.updateState(
-			{
-				command: this.stateModifier.getRetainUnchangedValuesCommand(),
-				invalidated: false,
-				childState: data,
-			},
-			true
-		);
+		this.updateState({
+			...this.state,
+			invalidated: false,
+			childState: data,
+		});
 	}
 
 	setErrorMsg(msg) {
-		this.updateState(
-			{
-				command: this.stateModifier.getRetainUnchangedValuesCommand(),
-				errorMessageAvailable: true,
-				errorMsg: msg,
-				invalidated: false,
-			},
-			true
-		);
+		this.updateState({
+			...this.state,
+			errorMessageAvailable: true,
+			errorMsg: msg,
+			invalidated: false,
+		});
 	}
 
 	clearErrorMsg() {
-		this.updateState(
-			{
-				command: this.stateModifier.getRetainUnchangedValuesCommand(),
-				errorMessageAvailable: false,
-				errorMsg: "",
-				invalidated: false,
-			},
-			true
-		);
+		this.updateState({
+			...this.state,
+			errorMessageAvailable: false,
+			errorMsg: "",
+			invalidated: false,
+		});
 	}
 
 	handleResponse(response, requestId) {
@@ -157,6 +151,7 @@ const App = class App extends React.Component {
 			.then(
 				(response) => this.handleResponse(response, requestId),
 				(reason) => {
+					console.log(reason);
 					this.setErrorMsg(
 						`Sorry, we could not connect to the Internet`
 					);

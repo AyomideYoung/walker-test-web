@@ -1,3 +1,4 @@
+import { Brightness1TwoTone } from "@material-ui/icons";
 import { TreeView, TreeItem } from "@material-ui/lab";
 import { ExpandMoreIcon, RightChevronIcon } from "./editor/q-icon/ChevronIcons";
 import QIcon from "./editor/q-icon/QIcon";
@@ -179,34 +180,57 @@ class ModelActions {
 		};
 		let ids = this._convertTrackStringtoArray(item.track);
 
-		if (data === null || data.id === undefined)
+		if (this.data === null || this.data.id === undefined)
 			this._throwInvalidDataError();
 
 		let updatedData = this.updateItem(this.data, ids, addFunction);
 		this.data = updatedData;
+		console.log(JSON.parse(JSON.stringify(updatedData)));
 	}
 
-	deleteItem(item) {
+	deleteItem(deleteParams) {
 		let deleteFunction = (data) => {
 			let clone = { ...data };
 
 			if (hasNoChildren(data)) {
 				return data;
 			} else {
-				let filtered = clone.children.filter((e) => e.id !== item.id);
+				let filtered = clone.children.filter(
+					(e) => e.id !== deleteParams.targetId
+				);
 				clone.children = filtered;
 				return clone;
 			}
 		};
 
-		let itemParentTrack = this._convertTrackStringtoArray(item.track);
-		let updatedData = this.updateItem(this.data, itemParentTrack, deleteFunction);
+		let itemParentTrack = this._convertTrackStringtoArray(
+			deleteParams.parentTrack
+		);
+		let updatedData = this.updateItem(
+			this.data,
+			itemParentTrack,
+			deleteFunction
+		);
 		this.data = updatedData;
+
+		console.log(JSON.parse(JSON.stringify(updatedData)));
 	}
 
-	addAbsolute(track, item) {}
+	addAbsolute(track, item) {
+		let newItem = { ...item, track: track };
+		return this.addItem(newItem);
+	}
 
-	deleteAbsolute(track) {}
+	deleteAbsolute(track) {
+		let ids = [...this._convertTrackStringtoArray(track)];
+		let [itemId, ...ancestorIdsInReverse] = ids.reverse();
+		let ancestorIds = ancestorIdsInReverse.reverse();
+
+		return this.deleteItem({
+			targetId: itemId,
+			parentTrack: ancestorIds.join("/"),
+		});
+	}
 
 	replaceData(newData) {
 		this.data = newData;
@@ -216,19 +240,76 @@ class ModelActions {
 		this.selected = selected;
 	}
 
-	setSelectedAbsolute(track) {}
+	setSelectedAbsolute(track) {
+		let target = this._traverseToFetch(this.data, track);
+		this.setSelected(target);
+	}
 
 	getSelected() {
 		return this.selected;
 	}
 
 	getData() {
-		return {...this.data};
+		return { ...this.data };
 	}
 
-	nextItem() {}
+	nextItem(arg) {
+		if (typeof arg === "string") {
+			return this._getNextItemByTrack(arg);
+		} else if (typeof arg === "object") {
+			return this._getNextItemByTrack(arg.track);
+		}
+	}
 
-	previousItem() {}
+	
+	_getNextItemByTrack(trackString) {
+		let track = [...this._convertTrackStringtoArray(trackString)];
+		let ids = track.slice(0, track.length - 1);
+		let parent = this._traverseToFetch(this.data, ids);
+
+		parent.children = parent.children ? parent.children : [];
+
+		let hasFoundCurrent = false;
+		for (let i = 0; i < parent.children?.length; i++) {
+			let child = parent.children[i];
+
+			if (hasFoundCurrent) {
+				return child;
+			} else if (child.track === trackString) {
+				hasFoundCurrent = true;
+			}
+		}
+
+		return null;
+	}
+
+	previousItem(arg) {
+		if (typeof arg === "string") {
+			return this._getPreviousItemByTrack(arg);
+		} else if (typeof arg === "object") {
+			return this._getPreviousItemByTrack(arg.track);
+		}
+	}
+
+	_getPreviousItemByTrack(trackString) {
+		let track = [...this._convertTrackStringtoArray(trackString)];
+		let ids = track.slice(0, track.length - 1);
+		let parent = this._traverseToFetch(this.data, ids);
+
+		parent.children = parent.children ? parent.children : [];
+
+		
+		for (let i = 0; i < parent.children?.length; i++) {
+			let child = parent.children[i];
+ 
+			if (child.track === trackString) {
+				return parent.children[i-1]
+			}
+		}
+
+		return null;
+	}
+
 
 	throwNoMatchError(itemTrack) {
 		throw new Error(
@@ -236,6 +317,28 @@ class ModelActions {
 		);
 	}
 }
+
+function testActions() {
+	let data = {
+		id: "root",
+		children: [
+			{
+				id: "b1",
+			},
+			{
+				id: "b2",
+				label: "drunk",
+			},
+		],
+	};
+
+	let actions = new ModelActions(data);
+
+	actions.deleteAbsolute("root/b2");
+	console.log(JSON.parse(JSON.stringify(actions.getData())));
+}
+
+testActions();
 
 const Tree = (props) => {
 	return (

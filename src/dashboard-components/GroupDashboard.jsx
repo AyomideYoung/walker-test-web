@@ -10,6 +10,7 @@ import GroupConfigDashboard from "./GroupConfigDashboard";
 import tick from "../tick.svg";
 import React, { useState } from "react";
 import "./css/GroupDashboard.css";
+import { APP_CHILD_STATE_MODIFIER as stateModifier } from "../state-methods";
 
 function GroupDashboard(props) {
 	let addNewGroupUrl = "http://localhost:8080/dfonts/f/s";
@@ -18,21 +19,21 @@ function GroupDashboard(props) {
 	let newGroupName = React.createRef();
 
 	const showFormModal = () => {
-		props.modifyState((retainValue) => {
-			return {
-				command: retainValue,
-				isFormModalVisible: true,
-				errorMsg: "",
-			};
+		stateModifier.set({
+			...stateModifier.get(),
+			isFormModalVisible: true,
+			errorMsg: "",
 		});
 		setShowModalSpinner(false);
 		setShowSuccessTick(false);
 	};
 
 	const hideFormModal = () => {
-		props.modifyState((retainValue) => {
-			return { command: retainValue, isFormModalVisible: false };
-		});
+
+		stateModifier.set({
+			...stateModifier.get(),
+			isFormModalVisible: false,
+		})
 	};
 
 	const hideModalError = () => {
@@ -40,12 +41,10 @@ function GroupDashboard(props) {
 	};
 
 	const setModalErrorMsg = (msg) => {
-		props.modifyState((currentState) => {
-			return {
-				...currentState,
-				errorMsg: msg,
-			};
-		});
+		stateModifier.set({
+			...stateModifier.get(),
+			errorMsg: msg
+		})
 	};
 
 	const addNewGroup = function (e) {

@@ -1,8 +1,5 @@
 class ExtensibleStateModifier {
 	constructor(parent, propertyKeys, data) {
-		/**
-		 * @private
-		 */
 		this._data = data;
 		/**
 		 * @private
@@ -53,7 +50,7 @@ class ExtensibleStateModifier {
 	}
 
 	/**
-	 * Sets the callback to be called after set() operation is complete
+	 * Sets the callback to be called after ```set()``` operation is complete
 	 * @param {function} callbackFn
 	 */
 	setCallback(callbackFn) {
@@ -93,8 +90,8 @@ class ExtensibleStateModifier {
 	}
 
 	/**
-	 * Sets the data of this {@class ExtensibleStateModifier}. The sets the subset of the parent
-	 * data it is allowed to modify if a parent {@class ExtensibleStateModifier} is present.
+	 * Sets the data of this ExtensibleStateModifier. The sets the subset of the parent
+	 * data it is allowed to modify if a parent ExtensibleStateModifier is present.
 	 * @param {*} newData the new data
 	 *
 	 */
@@ -104,7 +101,9 @@ class ExtensibleStateModifier {
 			this._afterSet();
 			return;
 		} else if (this.parent) {
-			let parentData = { ...this.parent.get() };
+			let parentData = Array.isArray(this.parent.get())
+				? [...this.parent.get()]
+				: { ...this.parent.get() };
 
 			this._updateInParentData(parentData, newData, this._propertyKeys);
 			this.parent.set(parentData);

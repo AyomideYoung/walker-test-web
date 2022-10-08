@@ -2,37 +2,73 @@ import { createRef, useEffect } from "react";
 import { ButtonGroup, Button, Modal } from "react-bootstrap";
 import EditingEnvironment from "../../editor/EditingEnvironment";
 import bin from "../../images/bin2.svg";
-import qEdit from "../../images/q-edit.svg"
+import qEdit from "../../images/q-edit.svg";
 import pencil from "../../images/pencil.svg";
+import {
+	SUB_GROUP_LIST_ELEMENT_LIST_MODIFIER,
+	SUB_GROUP_PROPERTIES_GROUP_MODIFIER,
+} from "../../state-methods";
 
 const SubGroupActionTray = function (props) {
 	let inputRef = createRef();
-	const composeSubGroupUrl = () =>{
+
+	const actionTrayComponentStateModifier =
+		SUB_GROUP_LIST_ELEMENT_LIST_MODIFIER.encapsulate(props.index);
+	const subGroupModifier = SUB_GROUP_PROPERTIES_GROUP_MODIFIER.encapsulate(
+		props.index
+	);
+
+	const composeSubGroupUrl = () => {
 		//return `http://localhost:8080/groups/rf2938s9/subs/${props.id}`
 		return "http://localhost:8080/db/home";
-	}
+	};
 	let hasComponentState = !(props.componentState === undefined);
 	let { isEditing, isShowingModal } = hasComponentState
 		? props.componentState
 		: false;
 
-	let setEditing = () => props.modifyComponentProperty(true, "isEditing");
-	let unsetEditing = () => props.modifyComponentProperty(false, "isEditing");
+	let setEditing = () => {
+		actionTrayComponentStateModifier.set({
+			...actionTrayComponentStateModifier.get(),
+			isEditing: true,
+		});
+	};
+	let unsetEditing = () => {
+		actionTrayComponentStateModifier.set({
+			...actionTrayComponentStateModifier.get(),
+			isEditing: false,
+		});
+	};
 
 	let startEditingSubGroupQuestions = () => {
 		let url = composeSubGroupUrl();
 		props.updateScreen({
 			url: false,
 			props: [],
-			ChildComponent: EditingEnvironment
-		})
-	}
+			ChildComponent: EditingEnvironment,
+		});
+	};
 
-	let showModal = () => props.modifyComponentProperty(true, "isShowingModal");
-	let hideModal = () =>
-		props.modifyComponentProperty(false, "isShowingModal");
+	let showModal = () => {
+		actionTrayComponentStateModifier.set({
+			...actionTrayComponentStateModifier.get(),
+			isShowingModal: true,
+		});
+	};
 
-	let editName = () => props.modifyProperty(inputRef.current.value, "name");
+	let hideModal = () => {
+		actionTrayComponentStateModifier.set({
+			...actionTrayComponentStateModifier.get(),
+			isShowingModal: false,
+		});
+	};
+
+	let editName = () => {
+		subGroupModifier.set({
+			...subGroupModifier.get(),
+			name: inputRef.current.value,
+		});
+	};
 
 	//activate link
 	let deleteOnServer = () => {
@@ -59,8 +95,12 @@ const SubGroupActionTray = function (props) {
 	};
 
 	useEffect(() => {
-		props.modifyComponentProperty(false, "isEditing");
-		props.modifyComponentProperty(false, "isShowingModal");
+		actionTrayComponentStateModifier.set({
+			...actionTrayComponentStateModifier.get(),
+			isEditing: false,
+			isShowingModal: false,
+		});
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 

@@ -4,6 +4,7 @@ import GroupList from "./group-config/GroupList";
 import GroupConfig from "./GroupConfig";
 import "./css/GroupConfigDashboard.css";
 import modifyProperty from "../modifyProperty";
+import { APP_CHILD_STATE_MODIFIER as stateModifier } from "../state-methods";
 
 const GroupConfigDashboard = class GroupConfigDashboard extends Component {
 	constructor(props) {
@@ -27,21 +28,19 @@ const GroupConfigDashboard = class GroupConfigDashboard extends Component {
 	}
 
 	defaultState() {
-		this.props.modifyState((retainUnchanged) => {
-			return {
-				command: retainUnchanged,
-				componentState: {
-					isGroupListLoaded: false,
-					isGroupConfigLoaded: false,
-					groupConfig: {
-						subGroupList: {
-							elementList: [],
-						},
+		stateModifier.set({
+			...stateModifier.get(),
+			componentState: {
+				isGroupListLoaded: false,
+				isGroupConfigLoaded: false,
+				groupConfig: {
+					subGroupList: {
+						elementList: [],
 					},
 				},
-				groupList: {},
-				groupConfig: {},
-			};
+			},
+			groupList: {},
+			groupConfig: {},
 		});
 	}
 
@@ -77,32 +76,29 @@ const GroupConfigDashboard = class GroupConfigDashboard extends Component {
 	}
 
 	changeGroupListItems(items) {
-		this.props.modifyState((retainUnchanged) => {
-			return {
-				command: retainUnchanged,
-				groupList: {
-					command: retainUnchanged,
-					items: items,
-				},
-				componentState: {
-					command: retainUnchanged,
-					isGroupListLoaded: true,
-				},
-			};
+		let currentState = stateModifier.get();
+		stateModifier.set({
+			...currentState,
+			groupList: {
+				...currentState.groupList,
+				items: items,
+			},
+			componentState: {
+				...currentState.componentState,
+				isGroupListLoaded: true,
+			},
 		});
 	}
 
-
 	replaceGroupConfigState(newState) {
-		this.props.modifyState((retainUnchanged) => {
-			return {
-				command: retainUnchanged,
-				groupConfig: newState,
-				componentState: {
-					command: retainUnchanged,
-					isGroupConfigLoaded: true,
-				},
-			};
+		let currentState = stateModifier.get();
+		stateModifier.set({
+			...currentState,
+			groupConfig: newState,
+			componentState: {
+				...currentState.componentState,
+				isGroupConfigLoaded: true,
+			},
 		});
 	}
 
@@ -139,9 +135,7 @@ const GroupConfigDashboard = class GroupConfigDashboard extends Component {
 	}
 
 	render() {
-
-		if(this.props.componentState === undefined)
-			return null;
+		if (this.props.componentState === undefined) return null;
 
 		return (
 			<Row>
@@ -161,7 +155,9 @@ const GroupConfigDashboard = class GroupConfigDashboard extends Component {
 						<Card className="p-3 shadow">
 							<GroupConfig
 								{...this.props.groupConfig}
-								componentState = {this.props.componentState.groupConfig}
+								componentState={
+									this.props.componentState.groupConfig
+								}
 								genericFetchResponseHandler={
 									this.props.genericFetchResponseHandler
 								}

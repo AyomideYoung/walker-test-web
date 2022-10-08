@@ -1,0 +1,41 @@
+import ExtensibleStateModifier from "./ExtensibleStateModifier";
+
+const ROOT_MODIFIER = new ExtensibleStateModifier(null, null, {});
+//app child state modifier
+const APP_CHILD_STATE_MODIFIER = ROOT_MODIFIER.encapsulate("childState");
+const CHILD_COMPONENT_STATE_MODIFIER =
+	APP_CHILD_STATE_MODIFIER.encapsulate("componentState");
+//specific app children modifier
+const GROUP_LIST_MODIFIER = APP_CHILD_STATE_MODIFIER.encapsulate("groupList");
+const GROUP_CONFIG_STATE_MODIFIER =
+	APP_CHILD_STATE_MODIFIER.encapsulate("groupConfig");
+
+//group config data modifier
+const CONFIG_MODIFIER = GROUP_CONFIG_STATE_MODIFIER.encapsulate("config");
+const SUB_GROUP_PROPERTIES_MODIFIER =
+	CONFIG_MODIFIER.encapsulate("subGroupProperties");
+const SUB_GROUP_PROPERTIES_GROUP_MODIFIER =
+	SUB_GROUP_PROPERTIES_MODIFIER.encapsulate("groups");
+
+const GROUP_CONFIG_COMPONENT_STATE_MODIFIER =
+	CHILD_COMPONENT_STATE_MODIFIER.encapsulate("groupConfig");
+
+//group config component state modifier
+const SUB_GROUP_LIST_COMPONENT_STATE_MODIFIER =
+	GROUP_CONFIG_COMPONENT_STATE_MODIFIER.encapsulate("subGroupList");
+const SUB_GROUP_LIST_ELEMENT_LIST_MODIFIER =
+	SUB_GROUP_LIST_COMPONENT_STATE_MODIFIER.encapsulate("elementList");
+
+export {
+	ROOT_MODIFIER,
+	APP_CHILD_STATE_MODIFIER,
+	GROUP_LIST_MODIFIER,
+	CHILD_COMPONENT_STATE_MODIFIER,
+	GROUP_CONFIG_STATE_MODIFIER,
+	SUB_GROUP_LIST_COMPONENT_STATE_MODIFIER,
+	SUB_GROUP_LIST_ELEMENT_LIST_MODIFIER,
+	CONFIG_MODIFIER,
+	SUB_GROUP_PROPERTIES_MODIFIER,
+	SUB_GROUP_PROPERTIES_GROUP_MODIFIER,
+	GROUP_CONFIG_COMPONENT_STATE_MODIFIER,
+};

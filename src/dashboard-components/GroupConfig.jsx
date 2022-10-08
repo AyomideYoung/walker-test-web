@@ -1,6 +1,6 @@
 import TechnoTab from "./TechnoTab.jsx";
 import React, { createRef, useState, useEffect } from "react";
-import modifyProperty from "../modifyProperty";
+
 import SubGroupList from "./group-config/SubGroupList";
 import GroupSettings from "./group-config/GroupSettings";
 
@@ -11,25 +11,6 @@ const GroupConfig = (props) => {
 	);
 	let [isOrderOptionsLoaded, setOrderOptionsLoaded] = useState(false);
 	let [orderOptions, setOrderOptions] = useState([]);
-
-	function modifyPropertyForSettings(newValue, ...keys) {
-		modifyProperty(props.modifyState, newValue, "config", ...keys);
-	}
-
-	function modifyPropertyForSubGroupList(newValue, ...keys) {
-		modifyProperty(
-			props.modifyState,
-			newValue,
-			"config",
-			"subGroupProperties",
-			"___groups",
-			...keys
-		);
-	}
-
-	function modifyComponentPropertyForSubGroupList(newValue, ...keys) {
-		props.modifyComponentProperty(newValue, "subGroupList", ...keys);
-	}
 
 	function fetchOrderOptions(url) {
 		fetch(url)
@@ -49,8 +30,6 @@ const GroupConfig = (props) => {
 			contentComponent: SubGroupList,
 			props: {
 				items: props.config.subGroupProperties.groups,
-				modifyProperty: modifyPropertyForSubGroupList,
-				modifyComponentProperty: modifyComponentPropertyForSubGroupList,
 				componentState: props.componentState.subGroupList,
 				updateScreen: props.updateScreen,
 				setErrorMsg: props.setErrorMsg,
@@ -66,7 +45,6 @@ const GroupConfig = (props) => {
 				config: props.config,
 				orderOptions: orderOptions,
 				isOrderOptionsLoaded: isOrderOptionsLoaded,
-				modifyProperty: modifyPropertyForSettings,
 				genericFetchResponseHandler: props.genericFetchResponseHandler,
 			},
 		},

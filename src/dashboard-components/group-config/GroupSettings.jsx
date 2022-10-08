@@ -3,6 +3,11 @@ import { useRef } from "react";
 import Form from "react-bootstrap/Form";
 import PredefinedQuestionsFormToggle from "./PredefinedQuestionsFormToggle";
 import RandomQuestionsFormToggle from "./RandomQuestionsFormToggle";
+import {
+	SUB_GROUP_PROPERTIES_MODIFIER as subGroupPropertiesModifier,
+	CONFIG_MODIFIER as configModifier,
+	SUB_GROUP_PROPERTIES_GROUP_MODIFIER,
+} from "../../state-methods";
 
 const GroupSettings = (props) => {
 	let requiredRandomQuestionsInputRef = useRef();
@@ -34,71 +39,88 @@ const GroupSettings = (props) => {
 		);
 	};
 
-	const setRandomizeAllFlag = (flag) =>
-		props.modifyProperty(flag, "randomizeAll");
-
-	const setRequiredRandomQuestions = (number) =>
-		props.modifyProperty(number, "requiredRandomQuestions");
-
-	const setUserSelectable = (flag) =>
-		props.modifyProperty(flag, "subGroupProperties", "userSelectable");
-
-	const setPreserveGroupHierarchyInPackage = (flag) =>
-		props.modifyProperty(
-			flag,
-			"subGroupProperties",
-			"preserveGroupHierarchyInPackage"
-		);
-
-	const setMinSelectable = (number) =>
-		props.modifyProperty(number, "subGroupProperties", "minSelectable");
-
-	const setMaxSelectable = (number) =>
-		props.modifyProperty(number, "subGroupProperties", "maxSelectable");
-
-	const toggleCompulsoryFlag = (groupIndex) => {
-		let newValue = !props.config.subGroupProperties.groups[groupIndex]
-			.compulsory;
-
-		props.modifyProperty(
-			newValue,
-			"subGroupProperties",
-			"groups",
-			groupIndex,
-			"compulsory"
-		);
+	const setRandomizeAllFlag = (flag) => {
+		configModifier.set({ ...configModifier.get(), randomizeAll: flag });
 	};
 
-	const setNumberOfRequiredQuestions = (subGroupIndex, number) =>
-		props.modifyProperty(
-			number,
-			"subGroupProperties",
-			"___groups",
-			subGroupIndex,
-			"numberOfRequiredQuestions"
-		);
+	const setRequiredRandomQuestions = (number) => {
+		configModifier.set({
+			...configModifier.get(),
+			requiredRandomQuestions: number,
+		});
+	};
 
-	const changeSubGroupName = (subGroupIndex, newName) =>
-		props.modifyProperty(
-			newName,
-			"subGroupProperties",
-			"groups",
-			subGroupIndex,
-			"name"
-		);
+	const setUserSelectable = (flag) => {
+		subGroupPropertiesModifier.set({
+			...subGroupPropertiesModifier.get(),
+			userSelectable: flag,
+		});
+	};
+
+	const setPreserveGroupHierarchyInPackage = (flag) => {
+		subGroupPropertiesModifier.set({
+			...subGroupPropertiesModifier.get(),
+			preserveGroupHierachyInPackage: flag,
+		});
+	};
+
+	const setMinSelectable = (number) => {
+		subGroupPropertiesModifier.set({
+			...subGroupPropertiesModifier.get(),
+			minSelectable: number,
+		});
+	};
+
+	const setMaxSelectable = (number) => {
+		subGroupPropertiesModifier.set({
+			...subGroupPropertiesModifier.get(),
+			minSelectable: number,
+		});
+	};
+
+	const toggleCompulsoryFlag = (subGroupIndex) => {
+		let newValue =
+			!props.config.subGroupProperties.groups[subGroupIndex].compulsory;
+		let groupPropertyModifier =
+			SUB_GROUP_PROPERTIES_GROUP_MODIFIER.encapsulate(subGroupIndex);
+
+		groupPropertyModifier.set({
+			...groupPropertyModifier.get(),
+			compulsory: newValue,
+		});
+	};
+
+	const setNumberOfRequiredQuestions = (subGroupIndex, number) => {
+		let groupPropertyModifier =
+			SUB_GROUP_PROPERTIES_GROUP_MODIFIER.encapsulate(subGroupIndex);
+
+		groupPropertyModifier.set({
+			...groupPropertyModifier.get(),
+			numberOfRequiredQuestions: number,
+		});
+	};
+
+	const changeSubGroupName = (subGroupIndex, newName) => {
+		let groupPropertyModifier =
+			SUB_GROUP_PROPERTIES_GROUP_MODIFIER.encapsulate(subGroupIndex);
+
+		groupPropertyModifier.set({
+			...groupPropertyModifier.get(),
+			name: newName,
+		});
+	};
 	//add Ref validator
 
-	const changeOrder = (groupIndex, order) => {
-		if (props.orderOptions.contains(order))
-			props.modifyProperty(
-				order,
-				"subGroupProperties",
-				"groups",
-				groupIndex,
-				"order"
-			);
-			
-		else {
+	const changeOrder = (subGroupIndex, order) => {
+		if (props.orderOptions.contains(order)) {
+			let groupPropertyModifier =
+				SUB_GROUP_PROPERTIES_GROUP_MODIFIER.encapsulate(subGroupIndex);
+
+			groupPropertyModifier.set({
+				...groupPropertyModifier.get(),
+				order: order,
+			});
+		} else {
 			console.log("Invalid order option");
 		}
 	};
@@ -108,7 +130,8 @@ const GroupSettings = (props) => {
 		onMaxSelectableChanged: onMaxSelectableChanged,
 		onRandomizeAllChanged: onRandomizeAllChanged,
 		onUserSelectableChanged: onUserSelectableChanged,
-		onPreserveGroupHierarchyInPackageChanged: onPreserveGroupHierarchyInPackageChanged,
+		onPreserveGroupHierarchyInPackageChanged:
+			onPreserveGroupHierarchyInPackageChanged,
 		changeOrder: changeOrder,
 		changeSubGroupName: changeSubGroupName,
 		toggleCompulsoryFlag: toggleCompulsoryFlag,

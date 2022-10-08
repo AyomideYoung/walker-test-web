@@ -14,6 +14,11 @@ import cross from "../../images/cross.svg";
 import cancel from "../../images/x-icon.svg";
 import { useRef, useEffect } from "react";
 import SubGroupActionTray from "./SubGroupActionTray";
+import {
+	SUB_GROUP_LIST_COMPONENT_STATE_MODIFIER,
+	SUB_GROUP_LIST_ELEMENT_LIST_MODIFIER as elementListModifier,
+	SUB_GROUP_PROPERTIES_GROUP_MODIFIER as subGroupsModifier,
+} from "../../state-methods";
 
 const PseudoElement = (props) => (
 	<Form
@@ -84,7 +89,7 @@ const PseudoElementContainer = (props) => {
 };
 
 const SubGroupList = (props) => {
-	useEffect(() => hidePseudoElement, []);
+	
 	console.log(props.items);
 	let pseudoInput = useRef();
 	let updateSubGroups = (newGroup) => {
@@ -108,10 +113,19 @@ const SubGroupList = (props) => {
 
 	let isShowingPseudoElement = props.componentState.isShowingPseudoElement;
 
-	let showPseudoElement = () =>
-		props.modifyComponentProperty(true, "isShowingPseudoElement");
-	let hidePseudoElement = () =>
-		props.modifyComponentProperty(false, "isShowingPseudoElement");
+	let showPseudoElement = () => {
+		SUB_GROUP_LIST_COMPONENT_STATE_MODIFIER.set({
+			...SUB_GROUP_LIST_COMPONENT_STATE_MODIFIER.get(),
+			isShowingPseudoElement: true,
+		});
+	};
+
+	let hidePseudoElement = () => {
+		SUB_GROUP_LIST_COMPONENT_STATE_MODIFIER.set({
+			...SUB_GROUP_LIST_COMPONENT_STATE_MODIFIER.get(),
+			isShowingPseudoElement: false,
+		});
+	};
 
 	let deleteSubGroup = (itemIndex) => {
 		let { items } = props;
@@ -120,9 +134,12 @@ const SubGroupList = (props) => {
 		items.splice(itemIndex, 1);
 		elementList.splice(itemIndex, 1);
 
-		props.modifyComponentProperty(elementList, "___elementList");
-		props.modifyProperty(items);
+		elementListModifier.set(elementList);
+		subGroupsModifier.set(items);
+		//do a fetch to finalize this on the backend
 	};
+
+	useEffect(hidePseudoElement, []);
 
 	return (
 		<Card className="lato-regular mt-2">
@@ -156,20 +173,7 @@ const SubGroupList = (props) => {
 								componentState={
 									props.componentState.elementList[i]
 								}
-								modifyComponentProperty={(
-									newValue,
-									...keys
-								) => {
-									props.modifyComponentProperty(
-										newValue,
-										"___elementList",
-										i,
-										...keys
-									);
-								}}
-								modifyProperty={(newValue, ...keys) =>
-									props.modifyProperty(newValue, i, ...keys)
-								}
+								index={i}
 							/>
 						</ListGroup.Item>
 					))}
