@@ -1,4 +1,3 @@
-import { Brightness1TwoTone } from "@material-ui/icons";
 import { TreeView, TreeItem } from "@material-ui/lab";
 import { ExpandMoreIcon, RightChevronIcon } from "./editor/q-icon/ChevronIcons";
 import QIcon from "./editor/q-icon/QIcon";
