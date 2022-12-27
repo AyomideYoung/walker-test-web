@@ -1,4 +1,4 @@
-import SvgIcon from "@material-ui/core/SvgIcon";
+import SvgIcon from "@mui/material/SvgIcon";
 
 const QIcon = () => (
 	<SvgIcon viewBox="0 0 4.9564436 5.1453323">

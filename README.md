@@ -226,7 +226,7 @@ modifier.deepUpdateObject(
 
 To update an array, just make sure that its first entry is the retainmentCommand if you do not want to overwrite the existing values.
 
-#### ```modifyProperty```
+#### `modifyProperty`
 
 The `modifyProperty` is an extension to the ObjectModifier. It is designed for updating one value only.
 
@@ -243,8 +243,8 @@ function modifyFunction(getMProps) {
 
 modifyProperty(modifyFunction, newValue, "branches", "mockBranch", "name");
 //Calling modifyProperty passes a function to modifyFunction
-//modifyFunction then invokes this passed function 
-//with the retainment command as an argument, 
+//modifyFunction then invokes this passed function
+//with the retainment command as an argument,
 //and gets the mProps object as a return value.
 
 //The mProps returned should look like
@@ -261,21 +261,26 @@ modifyProperty(modifyFunction, newValue, "branches", "mockBranch", "name");
 ```
 
 Because of its complexity, a straightforward approach is advised, for example,
+
 ```js
-    obj.branches.mockBranch.name = newValue;
+obj.branches.mockBranch.name = newValue;
 ```
-.Use the straightforward approach unless you are specifically constrained to use the ```modifyProperty``` function.
+
+.Use the straightforward approach unless you are specifically constrained to use the `modifyProperty` function.
 
 > ### NOTE
+>
 > arrays have to be specified to the modifyProperty function, for example
+>
 > ```js
-> (modifyFunction, newValue, "element", "___children", 0)
->```
-> the three underscores before children notifies the ```modifyProperty``` function that the ```children property``` is an array.
+> modifyFunction, newValue, "element", "___children", 0;
+> ```
+>
+> the three underscores before children notifies the `modifyProperty` function that the `children property` is an array.
 
-### ```ExtensibleStateModifier```
+### `ExtensibleStateModifier`
 
-The ```ExtensibleStateModifier``` is the current state modifier at the time of writing. It is a class developed to create a framework of encapsulation for state modification. For example, if we have:
+The `ExtensibleStateModifier` is the current state modifier at the time of writing. It is a class developed to create a framework of encapsulation for state modification. For example, if we have:
 
 ```js
 let data = {
@@ -290,16 +295,16 @@ let data = {
 let dataModifier = new ExtensibleStateModifier(null, null, data);
 let branchesModifier = dataModifier.encapsulate("branches");
 ```
-, dataModifier will be able to modify all of its properties and subPropertis, while the branchesModifier will be limited to ```data.branches``` only. This ensures that unintended modification do not occur.
+
+ `dataModifier` will be able to modify all of its properties and subProperties, while the `branchesModifier` will be limited to `data.branches` only. This ensures that unintended modification do not occur.
 
 It works for arrays too,
 
 ```js
 let data = {
-    name: "Root",
-    children: [{name: "First Child"}, {name: "Second Child"}]
-}
-
+	name: "Root",
+	children: [{ name: "First Child" }, { name: "Second Child" }],
+};
 
 let dataModifier = new ExtensibleStateModifier(null, null, data);
 let childrenModifier = dataModifier.encapsulate("children");
@@ -308,10 +313,29 @@ childrenModifier.set([]);
 //This is equivalent to saying data.children = []
 
 let firstChildModifier = childrenModifier.encapsulate(0);
-firstChildModifier.set({name: "First Child, but Modified"})
+firstChildModifier.set({ name: "First Child, but Modified" });
 //This is equivalent to saying data.children[0]= {name: "First Child, but Modified"}
 
 //and so on....
 ```
 
-The current modifiers are sitting at ```./state-methods.js``` awaiting a sensible grouping
+The current modifiers are sitting at `./state-methods.js` awaiting a sensible grouping.
+
+
+## `TreeModel`
+
+The `TreeModel` is a class that represents the model of a tree structure. It contains methods for traversals, selecting and updating the members.
+
+All members must have an `id` and a `track` property. If they will have child nodes, then all of those child nodes must be in an array in the `children` property of their parent. The child nodes must also have their own individual `id`s and `track` properties.
+
+Member properties | Mandate | Description
+------------------|----------|-------------
+`id` | Required | The id of this member. This should be unique in the tree. While there is no enforcement to check if the `id` property is present, it must be present or it could cause the `TreeModel` instance to crash in many cases.
+`track` | Required except in the root | The `track` property is a string of ids separated by a delimiter. It contains the ids of the member's parents from the most remote in the hierachy to the most immediate. For example if the delimiter is `/`, then a child of a member branch2, who is in turn a child of a member branch1 who is the direct descendant of the root member 'root', will have a track similar to `root/branch1/branch2`. The role of a track is to be able to trace a child nodes ancestry. The root member should not have a track.
+`children` | Optional | The `children` property contains an array of child nodes that this member has. The children must have a track that ends with this member's id.
+
+### TreeModel Methods
+
+
+
+

@@ -109,7 +109,7 @@ const OptionEditor = (props) => {
 	);
 };
 
-const mapOptions = (index) => {
+const showOptionEditors = (index) => {
 	let optionArray = [];
 	for (let i = 0; i < index; i++) {
 		optionArray[i] = (
@@ -154,7 +154,7 @@ const EditingEnvironment = function (props) {
 						data="<p>Start Editing</p>"
 					/>
 
-					{mapOptions(4)}
+					{showOptionEditors(4)}
 				</Col>
 			</Row>
 		</Container>
