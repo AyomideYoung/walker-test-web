@@ -1,4 +1,4 @@
-import { TreeView, TreeItem } from "@material-ui/lab";
+import { TreeView, TreeItem } from "@mui/lab";
 import { ExpandMoreIcon, RightChevronIcon } from "./editor/q-icon/ChevronIcons";
 import QIcon from "./editor/q-icon/QIcon";
 
@@ -64,7 +64,7 @@ const Tree = (props) => {
 			defaultCollapseIcon={<RightChevronIcon />}
 			defaultExpandIcon={<ExpandMoreIcon />}
 		>
-			{createBranch(data)}
+			{createBranch(props.nodes)}
 		</TreeView>
 	);
 };
