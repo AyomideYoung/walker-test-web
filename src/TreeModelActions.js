@@ -15,6 +15,7 @@ class ModelActions {
 		this.data = data;
 		this.selected = null;
 		this.delimiter = delimiter;
+		
 	}
 
 	updateItem(data, itemTrack, updateFn) {
@@ -199,7 +200,7 @@ class ModelActions {
 	nextItem(arg) {
 		if (typeof arg === "string") {
 			return this._getNextItemByTrack(arg);
-		} else if (typeof arg === "object") {
+		} else if (typeof arg === "object" && typeof arg.track === "string") {
 			return this._getNextItemByTrack(arg.track.concat(`${this.delimiter}${arg.id}`));
 		}
 	}
@@ -230,7 +231,7 @@ class ModelActions {
 	previousItem(arg) {
 		if (typeof arg === "string") {
 			return this._getPreviousItemByTrack(arg);
-		} else if (typeof arg === "object") {
+		} else if (typeof arg === "object" && typeof arg.track === "string") {
 			return this._getPreviousItemByTrack(arg.track.concat(`${this.delimiter}${arg.id}`));
 		}
 	}

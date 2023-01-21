@@ -1,4 +1,4 @@
-import SvgIcon from "@material-ui/core/SvgIcon";
+import SvgIcon from "@mui/material/SvgIcon";
 
 const RightChevronIcon = (props) => (
 	<SvgIcon viewBox="0 0 4.1214144 6.3500017" {...props}>

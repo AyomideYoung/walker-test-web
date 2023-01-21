@@ -1,7 +1,7 @@
 import Modal from "react-bootstrap/Modal";
 import { useState } from "react";
 
-const ErrorModal = function ({ show, errorMsg, onHide }) {
+const ErrorModal = function ({ show, errorMsg, onHide}) {
 	const [visible, setVisible] = useState(show);
 
 	return (
@@ -10,7 +10,9 @@ const ErrorModal = function ({ show, errorMsg, onHide }) {
 			centered
 			onHide={() => {
 				setVisible(false);
-				onHide();
+				if (typeof onHide === "function") {
+					onHide();
+				}
 			}}
 		>
 			<Modal.Header closeButton>
